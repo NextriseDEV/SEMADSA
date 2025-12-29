@@ -66,9 +66,9 @@
                 localStorage.setItem('semadsa_user', JSON.stringify(data.user));
                 
                 if(data.user.nivel === 'admin') {
-                    window.location.href = 'gestao_matriculados/painel_admin.html';
+                    window.location.href = 'gestao/painel_admin.html';
                 } else {
-                    window.location.href = 'gestao_matriculados/painel_contribuinte.html';
+                    window.location.href = 'gestao/painel_contribuinte.html';
                 }
             } else {
                 alert(data.message);
