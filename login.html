@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso - SEMADSA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #111827; } /* Fundo Escuro para Login */
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
+    <div class="text-center mb-8">
+        <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="Logo" class="h-24 mx-auto drop-shadow-2xl">
+    </div>
+
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-1">Bem-vindo</h2>
+            <p class="text-center text-gray-500 text-sm mb-6">Portal do Contribuinte</p>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-gray-600 uppercase">CPF</label>
+                    <input type="text" id="loginCpf" class="w-full p-3 border rounded-lg bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition" placeholder="000.000.000-00" oninput="maskCPF(this)" required>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-600 uppercase">Senha</label>
+                    <input type="password" id="loginSenha" class="w-full p-3 border rounded-lg bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition" placeholder="******" required>
+                </div>
+                
+                <button type="submit" id="btnLogin" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-lg transition">
+                    ENTRAR
+                </button>
+            </form>
+        </div>
+        <div class="bg-gray-50 p-4 text-center border-t">
+            <a href="cadastro.html" class="text-sm text-blue-600 font-bold hover:underline">Criar nova conta</a>
+        </div>
+    </div>
+
+<script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnLogin');
+        const originalText = btn.innerText;
+        btn.innerText = "Validando...";
+        btn.disabled = true;
+
+        const cpf = document.getElementById('loginCpf').value;
+        const senha = document.getElementById('loginSenha').value;
+
+        try {
+            const res = await fetch(API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'login', cpf: cpf, senha: senha }) 
+            });
+            const data = await res.json();
+
+            if(data.status === 'success') {
+                localStorage.setItem('semadsa_user', JSON.stringify(data.user));
+                
+                if(data.user.nivel === 'admin') {
+                    window.location.href = 'gestao_matriculados/painel_admin.html';
+                } else {
+                    window.location.href = 'gestao_matriculados/painel_contribuinte.html';
+                }
+            } else {
+                alert(data.message);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao conectar.");
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+    const maskCPF = (el) => el.value = el.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})/, '$1-$2').replace(/(-\d{2})\d+?$/, '$1');
+</script>
+</body>
+</html>
