@@ -1,1 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Contribuinte - SEMADSA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
+    <script>
+        // Auth Guard
+        const user = JSON.parse(localStorage.getItem('semadsa_user'));
+        if(!user) window.location.href = '../login.html';
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800">
 
+    <nav class="bg-blue-900 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://nextrisedev.github.io/SEMADSA/ICONES.png" class="h-8">
+                <div>
+                    <h1 class="font-bold text-lg leading-none">SEMADSA</h1>
+                    <p class="text-xs text-blue-300">Painel do Parceiro</p>
+                </div>
+            </div>
+            <button onclick="localStorage.removeItem('semadsa_user'); window.location.href='../login.html'" class="text-blue-200 hover:text-white"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6 max-w-lg mt-8">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <div class="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center">
+                <p class="opacity-80 text-sm">Olá, <span id="userName" class="font-bold">...</span></p>
+                <h2 class="text-3xl font-bold mt-2" id="currentDateDisplay">Janeiro 2025</h2>
+                <p class="text-sm mt-1">Status da Contribuição</p>
+            </div>
+
+            <div class="p-8 text-center">
+                <p class="text-gray-500 mb-6 font-medium">Você contribuiu este mês?</p>
+
+                <label class="relative inline-flex items-center cursor-pointer mb-8">
+                    <input type="checkbox" id="toggleContrib" class="sr-only peer" onchange="toggleState()">
+                    <div class="w-20 h-10 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-8 after:w-9 after:transition-all peer-checked:bg-blue-600"></div>
+                    <span class="ml-3 text-sm font-bold text-gray-700" id="statusLabel">NÃO</span>
+                </label>
+
+                <div id="valorContainer" class="hidden transition-all duration-500 ease-in-out">
+                    <label class="block text-left text-xs font-bold text-blue-800 uppercase mb-1">Qual o valor?</label>
+                    <div class="flex items-center border-b-2 border-blue-600 py-2">
+                        <span class="text-xl font-bold text-gray-500 mr-2">R$</span>
+                        <input type="number" id="valorInput" class="appearance-none bg-transparent border-none w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none text-2xl font-bold" placeholder="0,00">
+                    </div>
+                    <button onclick="saveContribution()" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                        CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>
+                    </button>
+                </div>
+
+                <div id="msgObrigado" class="hidden mt-6 bg-blue-50 p-4 rounded-xl text-blue-800 font-bold border border-blue-100">
+                    <i class="fa-solid fa-heart text-red-500 animate-pulse"></i> Obrigado por manter a missão viva!
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+             <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" class="h-12 mx-auto opacity-50 grayscale">
+        </div>
+    </main>
+
+<script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+    document.addEventListener('DOMContentLoaded', init);
+
+    function init() {
+        document.getElementById('userName').innerText = user.nome;
+        const d = new Date();
+        document.getElementById('currentDateDisplay').innerText = `${meses[d.getMonth()]} ${d.getFullYear()}`;
+        loadStatus();
+    }
+
+    async function loadStatus() {
+        // Busca status atual no Backend
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboardData', userId: user.id }) });
+        const data = await res.json();
+        
+        const toggle = document.getElementById('toggleContrib');
+        const container = document.getElementById('valorContainer');
+        const label = document.getElementById('statusLabel');
+        const input = document.getElementById('valorInput');
+        const msg = document.getElementById('msgObrigado');
+
+        if(data.contribuiu === 'SIM') {
+            toggle.checked = true;
+            label.innerText = "SIM";
+            input.value = data.valor;
+            container.classList.add('hidden'); // Esconde o input se já salvou
+            msg.classList.remove('hidden');
+        } else {
+            toggle.checked = false;
+            label.innerText = "NÃO";
+            container.classList.add('hidden');
+            msg.classList.add('hidden');
+        }
+    }
+
+    function toggleState() {
+        const toggle = document.getElementById('toggleContrib');
+        const container = document.getElementById('valorContainer');
+        const label = document.getElementById('statusLabel');
+        const msg = document.getElementById('msgObrigado');
+
+        if(toggle.checked) {
+            label.innerText = "SIM";
+            container.classList.remove('hidden');
+            msg.classList.add('hidden');
+        } else {
+            label.innerText = "NÃO";
+            container.classList.add('hidden');
+            // Se desmarcar, avisa o backend para remover/zerar
+            saveContribution(false);
+        }
+    }
+
+    async function saveContribution(isActive = true) {
+        const val = document.getElementById('valorInput').value;
+        const btn = document.querySelector('#valorContainer button');
+        
+        if(isActive && (!val || val <= 0)) { alert("Informe um valor válido."); return; }
+        
+        if(isActive) {
+            btn.innerHTML = "Salvando...";
+            btn.disabled = true;
+        }
+
+        const payload = {
+            action: 'updateContribution',
+            userId: user.id,
+            userName: user.nome,
+            contribuiu: isActive,
+            valor: isActive ? val : 0
+        };
+
+        try {
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            
+            if(isActive) {
+                document.getElementById('valorContainer').classList.add('hidden');
+                document.getElementById('msgObrigado').classList.remove('hidden');
+                btn.innerHTML = 'CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>';
+                btn.disabled = false;
+            } else {
+                alert("Status atualizado para NÃO Contribuiu.");
+            }
+
+        } catch(e) {
+            alert("Erro ao salvar.");
+            console.error(e);
+        }
+    }
+</script>
+</body>
+</html>
