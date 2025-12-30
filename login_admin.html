@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Gestor - SEMADSA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; } /* Fundo Dark Blue */
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="text-center mb-8">
+        <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="Logo" class="h-24 mx-auto drop-shadow-2xl">
+        <span class="inline-block mt-2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Área Restrita</span>
+    </div>
+
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden border-t-4 border-blue-500">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-1">Acesso Administrativo</h2>
+            <p class="text-center text-gray-500 text-sm mb-6">Informe credenciais de gestor</p>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-gray-600 uppercase">Usuário</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user-shield absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="adminUser" class="w-full pl-10 pr-3 py-3 border rounded-lg bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition" placeholder="admin" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-600 uppercase">Senha</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3 top-3 text-gray-400"></i>
+                        <input type="password" id="adminPass" class="w-full pl-10 pr-3 py-3 border rounded-lg bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition" placeholder="******" required>
+                    </div>
+                </div>
+                
+                <button type="submit" id="btnLogin" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:-translate-y-1">
+                    ACESSAR PAINEL
+                </button>
+            </form>
+        </div>
+        <div class="bg-gray-100 p-4 text-center border-t">
+            <a href="login.html" class="text-xs text-gray-500 hover:text-blue-600 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para Área do Contribuinte
+            </a>
+        </div>
+    </div>
+
+<script>
+    // ⚠️ SUBSTITUA PELA SUA URL DEPLOY DO GOOGLE APPS SCRIPT
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
+
+    async function handleAdminLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnLogin');
+        const originalText = btn.innerText;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+        btn.disabled = true;
+
+        const login = document.getElementById('adminUser').value;
+        const senha = document.getElementById('adminPass').value;
+
+        try {
+            const res = await fetch(API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'loginAdmin', login: login, senha: senha }) 
+            });
+            const data = await res.json();
+
+            if(data.status === 'success') {
+                // Salva sessão ESPECÍFICA de Admin
+                localStorage.setItem('semadsa_admin', JSON.stringify(data.adminUser));
+                window.location.href = 'gestao/painel_admin.html';
+            } else {
+                alert("Erro: " + data.message);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erro de conexão com o servidor.");
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>
