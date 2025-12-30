@@ -8,17 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
-    
     <script>
-        // Auth Guard
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
-        // Ajustado para voltar uma pasta apenas (considerando estar em /gestao)
         if(!user) window.location.href = '../login.html';
     </script>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 pb-20">
 
-    <nav class="bg-blue-900 text-white p-4 shadow-lg">
+    <nav class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img src="https://nextrisedev.github.io/SEMADSA/ICONES.png" class="h-8">
@@ -27,16 +24,34 @@
                     <p class="text-xs text-blue-300">Painel do Parceiro</p>
                 </div>
             </div>
-            <button onclick="localStorage.removeItem('semadsa_user'); window.location.href='../login.html'" class="text-blue-200 hover:text-white"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            <div class="flex gap-4">
+                <a href="https://nextrisedev.github.io/SEMADSA/" class="text-blue-200 hover:text-white text-sm flex items-center gap-1"><i class="fa-solid fa-home"></i> Início</a>
+                <button onclick="localStorage.removeItem('semadsa_user'); window.location.href='../login.html'" class="text-blue-200 hover:text-white text-sm"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            </div>
         </div>
     </nav>
 
-    <main class="container mx-auto p-6 max-w-lg mt-8">
+    <main class="container mx-auto p-4 max-w-lg mt-4 space-y-6">
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-yellow-200 overflow-hidden">
+            <div class="bg-yellow-50 p-4 border-b border-yellow-100 flex items-center justify-between">
+                <h3 class="font-bold text-yellow-800"><i class="fa-solid fa-qrcode"></i> Contribuição PIX</h3>
+                <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full font-bold">Voluntário</span>
+            </div>
+            <div class="p-6 text-center">
+                <p class="text-sm text-gray-600 mb-4">Para ofertas avulsas ou dízimos, utilize a chave abaixo:</p>
+                <div class="bg-gray-100 p-3 rounded-lg border border-dashed border-gray-400 inline-block mb-4">
+                    <p class="font-mono font-bold text-lg text-blue-900 select-all">pix@semadsa.com.br</p>
+                </div>
+                <p class="text-xs text-gray-400">Banco XP - CNPJ: 00.000.000/0001-00</p>
+            </div>
+        </div>
+
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
             <div class="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center">
                 <p class="opacity-80 text-sm">Olá, <span id="userName" class="font-bold">...</span></p>
                 <h2 class="text-3xl font-bold mt-2" id="currentDateDisplay">...</h2>
-                <p class="text-sm mt-1">Status da Contribuição</p>
+                <p class="text-sm mt-1">Controle Mensal</p>
             </div>
 
             <div class="p-8 text-center">
@@ -49,13 +64,22 @@
                 </label>
 
                 <div id="valorContainer" class="hidden transition-all duration-500 ease-in-out">
-                    <label class="block text-left text-xs font-bold text-blue-800 uppercase mb-1">Qual o valor? (Opcional)</label>
-                    <div class="flex items-center border-b-2 border-blue-600 py-2">
-                        <span class="text-xl font-bold text-gray-500 mr-2">R$</span>
-                        <input type="number" id="valorInput" class="appearance-none bg-transparent border-none w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none text-2xl font-bold" placeholder="0,00">
+                    
+                    <label class="flex items-center justify-center gap-2 mb-4 text-sm text-gray-500 cursor-pointer">
+                        <input type="checkbox" id="noValueCheck" onchange="toggleValueInput()" class="w-4 h-4 text-blue-600 rounded">
+                        Prefiro não informar o valor
+                    </label>
+
+                    <div id="inputWrapper">
+                        <label class="block text-left text-xs font-bold text-blue-800 uppercase mb-1">Valor da Contribuição</label>
+                        <div class="flex items-center border-b-2 border-blue-600 py-2">
+                            <span class="text-xl font-bold text-gray-500 mr-2">R$</span>
+                            <input type="number" id="valorInput" class="appearance-none bg-transparent border-none w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none text-2xl font-bold" placeholder="0,00">
+                        </div>
                     </div>
+
                     <button onclick="saveContribution(true)" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg transition">
-                        CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>
+                        CONFIRMAR REGISTRO <i class="fa-solid fa-check"></i>
                     </button>
                 </div>
 
@@ -65,7 +89,7 @@
                 
                 <div class="mt-10 border-t border-gray-100 pt-8">
                     <h3 class="text-blue-900 font-bold text-lg mb-4 text-left flex items-center gap-2">
-                        <i class="fa-solid fa-chart-column"></i> Minha Evolução
+                        <i class="fa-solid fa-chart-column"></i> Minha Jornada
                     </h3>
                     <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100 h-64">
                         <canvas id="historyChart"></canvas>
@@ -74,16 +98,10 @@
 
             </div>
         </div>
-
-        <div class="mt-8 text-center">
-             <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" class="h-12 mx-auto opacity-50 grayscale">
-        </div>
     </main>
 
 <script>
-    // ⚠️ SUBSTITUA PELA SUA URL NOVA (CASO TENHA GERADO NOVO DEPLOY)
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
-    
     const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     let myChart = null;
     
@@ -104,13 +122,11 @@
             const toggle = document.getElementById('toggleContrib');
             const container = document.getElementById('valorContainer');
             const label = document.getElementById('statusLabel');
-            const input = document.getElementById('valorInput');
             const msg = document.getElementById('msgObrigado');
 
             if(data.contribuiu === 'SIM') {
                 toggle.checked = true;
                 label.innerText = "SIM";
-                input.value = data.valor;
                 container.classList.add('hidden');
                 msg.classList.remove('hidden');
             } else {
@@ -119,12 +135,8 @@
                 container.classList.add('hidden');
                 msg.classList.add('hidden');
             }
-
             renderChart(data.history);
-        } catch (error) {
-            console.error("Erro ao carregar dados:", error);
-            alert("Falha ao carregar informações. Verifique sua conexão.");
-        }
+        } catch (error) { console.error(error); }
     }
 
     function toggleState() {
@@ -140,16 +152,33 @@
         } else {
             label.innerText = "NÃO";
             container.classList.add('hidden');
-            msg.classList.add('hidden');
-            // Salva como NÃO imediatamente
             saveContribution(false); 
         }
     }
 
+    function toggleValueInput() {
+        const check = document.getElementById('noValueCheck');
+        const wrapper = document.getElementById('inputWrapper');
+        const input = document.getElementById('valorInput');
+        
+        if(check.checked) {
+            wrapper.style.opacity = '0.3';
+            wrapper.style.pointerEvents = 'none';
+            input.value = '';
+        } else {
+            wrapper.style.opacity = '1';
+            wrapper.style.pointerEvents = 'auto';
+        }
+    }
+
     async function saveContribution(isActive) {
-        const val = document.getElementById('valorInput').value;
+        const noValue = document.getElementById('noValueCheck').checked;
+        const valInput = document.getElementById('valorInput').value;
         const btn = document.querySelector('#valorContainer button');
         
+        let valorFinal = 0;
+        if(isActive && !noValue && valInput) valorFinal = valInput;
+
         if(isActive && btn) {
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
             btn.disabled = true;
@@ -160,7 +189,7 @@
             userId: user.id,
             userName: user.nome,
             contribuiu: isActive,
-            valor: (isActive && val) ? val : 0 // Valor Opcional (envia 0 se vazio)
+            valor: valorFinal
         };
 
         try {
@@ -172,17 +201,15 @@
                     document.getElementById('valorContainer').classList.add('hidden');
                     document.getElementById('msgObrigado').classList.remove('hidden');
                 }
-                loadStatus(); // Atualiza gráfico e estado
+                loadStatus(); 
             } else {
-                throw new Error(data.message);
+                alert(data.message);
             }
-
         } catch(e) {
-            alert("Erro ao salvar: " + e.message);
-            console.error(e);
+            alert("Erro ao salvar.");
         } finally {
             if(isActive && btn) {
-                btn.innerHTML = 'CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>';
+                btn.innerHTML = 'CONFIRMAR REGISTRO <i class="fa-solid fa-check"></i>';
                 btn.disabled = false;
             }
         }
@@ -191,8 +218,7 @@
     function renderChart(history) {
         if (!history) return;
         const ctx = document.getElementById('historyChart').getContext('2d');
-        
-        const labels = history.map(h => `${meses[h.mes - 1]}/${h.ano.toString().slice(-2)}`);
+        const labels = history.map(h => `${meses[h.mes - 1]}`);
         const dataValues = history.map(h => h.valor || 0);
         const backgroundColors = history.map(h => h.status === 'SIM' ? '#2563eb' : '#e5e7eb');
 
@@ -200,24 +226,8 @@
 
         myChart = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Contribuição (R$)',
-                    data: dataValues,
-                    backgroundColor: backgroundColors,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { borderDash: [2, 4], color: '#e5e7eb' }, ticks: { font: { size: 10 } } },
-                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-                }
-            }
+            data: { labels: labels, datasets: [{ label: 'Valor (R$)', data: dataValues, backgroundColor: backgroundColors, borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
         });
     }
 </script>
