@@ -10,100 +10,81 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; background: #f0f4f8; }
-        .hero-pattern {
-            background-color: #1e3a8a; /* blue-900 */
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+        .hero-pattern { background-color: #1e3a8a; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 hero-pattern">
 
-    <div class="w-full max-w-md glass-panel rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:scale-[1.01]">
+    <div class="w-full max-w-md glass-panel rounded-2xl shadow-2xl overflow-hidden relative">
+        <a href="https://nextrisedev.github.io/SEMADSA/" class="absolute top-4 left-4 text-white hover:text-blue-200 z-20 text-sm font-bold flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Início
+        </a>
+
         <div class="bg-blue-900 p-8 text-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-800 to-indigo-900 opacity-90"></div>
-            <div class="relative z-10">
-                <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="SEMADSA" class="h-20 mx-auto mb-4 drop-shadow-lg">
-                <h2 class="text-white text-2xl font-bold tracking-tight">Junte-se à Missão</h2>
-                <p class="text-blue-200 text-sm mt-1">Cadastro de Contribuintes</p>
-            </div>
+            <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="SEMADSA" class="h-16 mx-auto mb-2 drop-shadow-lg">
+            <h2 class="text-white text-xl font-bold">Cadastro de Contribuinte</h2>
         </div>
 
-        <form id="formCadastro" onsubmit="handleRegister(event)" class="p-8 space-y-5">
+        <form id="formCadastro" onsubmit="handleRegister(event)" class="p-8 space-y-4">
             
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-blue-800 uppercase mb-1">Nome Completo</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3 top-3 text-blue-300"></i>
-                        <input type="text" id="nome" required class="w-full pl-10 pr-4 py-2 border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-gray-700 placeholder-gray-400" placeholder="Seu nome">
-                    </div>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-blue-800 uppercase mb-1">Nome Completo</label>
+                <input type="text" id="nome" required class="w-full p-2 border rounded-lg focus:border-blue-500 outline-none uppercase" placeholder="SEU NOME">
+            </div>
 
+            <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-blue-800 uppercase mb-1">CPF</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-id-card absolute left-3 top-3 text-blue-300"></i>
-                        <input type="text" id="cpf" required class="w-full pl-10 pr-4 py-2 border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-gray-700" placeholder="000.000.000-00" oninput="maskCPF(this)">
-                    </div>
+                    <input type="text" id="cpf" required class="w-full p-2 border rounded-lg focus:border-blue-500 outline-none" placeholder="000.000.000-00" oninput="maskCPF(this)">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-bold text-blue-800 uppercase mb-1">E-mail</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-envelope absolute left-3 top-3 text-blue-300"></i>
-                        <input type="email" id="email" required class="w-full pl-10 pr-4 py-2 border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-gray-700" placeholder="seu@email.com">
-                    </div>
+                    <label class="block text-xs font-bold text-blue-800 uppercase mb-1">Nascimento</label>
+                    <input type="date" id="nascimento" required class="w-full p-2 border rounded-lg focus:border-blue-500 outline-none">
                 </div>
+            </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-blue-800 uppercase mb-1">WhatsApp</label>
-                    <div class="relative">
-                        <i class="fa-brands fa-whatsapp absolute left-3 top-3 text-blue-300"></i>
-                        <input type="tel" id="whatsapp" required class="w-full pl-10 pr-4 py-2 border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-gray-700" placeholder="(11) 99999-9999" oninput="maskPhone(this)">
-                    </div>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-blue-800 uppercase mb-1">E-mail</label>
+                <input type="email" id="email" required class="w-full p-2 border rounded-lg focus:border-blue-500 outline-none" placeholder="seu@email.com">
+            </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-blue-800 uppercase mb-1">Crie uma Senha</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3 top-3 text-blue-300"></i>
-                        <input type="password" id="senha" required class="w-full pl-10 pr-4 py-2 border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-gray-700" placeholder="******">
-                    </div>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-blue-800 uppercase mb-1">WhatsApp</label>
+                <input type="tel" id="whatsapp" required class="w-full p-2 border rounded-lg focus:border-blue-500 outline-none" placeholder="(11) 99999-9999" oninput="maskPhone(this)">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-blue-800 uppercase mb-1">Senha</label>
+                <input type="password" id="senha" required class="w-full p-2 border rounded-lg focus:border-blue-500 outline-none" placeholder="******">
             </div>
 
             <div class="flex items-start gap-3 pt-2">
-                <input type="checkbox" id="lgpd" required class="mt-1 w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <input type="checkbox" id="lgpd" required class="mt-1 w-4 h-4 text-blue-600 rounded">
                 <label for="lgpd" class="text-xs text-gray-500 leading-relaxed">
-                    Concordo que meus dados sejam utilizados pela SEMADSA para fins de comunicação missionária, conforme a LGPD.
+                    Concordo com os termos e com o recebimento de mensagens missionárias.
                 </label>
             </div>
 
-            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                FINALIZAR CADASTRO <i class="fa-solid fa-arrow-right"></i>
+            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                FINALIZAR CADASTRO
             </button>
 
             <p class="text-center text-xs text-gray-400 mt-4">
-                Já contribui? <a href="login.html" class="text-blue-600 font-bold hover:underline">Fazer Login</a>
+                Já tem conta? <a href="login.html" class="text-blue-600 font-bold hover:underline">Fazer Login</a>
             </p>
         </form>
     </div>
 
 <script>
-    // ⚠️ COLOQUE A URL DO SEU DEPLOY DO GOOGLE APPS SCRIPT AQUI ⚠️
+    // ⚠️ ATENÇÃO: URL DO APP SCRIPT
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
 
     async function handleRegister(e) {
         e.preventDefault();
         const btn = document.getElementById('btnSubmit');
         const originalText = btn.innerHTML;
-        
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ...';
         btn.disabled = true;
 
         const payload = {
@@ -112,6 +93,7 @@
             cpf: document.getElementById('cpf').value,
             email: document.getElementById('email').value,
             whatsapp: document.getElementById('whatsapp').value,
+            nascimento: document.getElementById('nascimento').value,
             senha: document.getElementById('senha').value,
             termos: document.getElementById('lgpd').checked
         };
@@ -121,7 +103,7 @@
             const data = await res.json();
 
             if(data.status === 'success') {
-                alert("Cadastro realizado! Você será redirecionado para o login.");
+                alert("Cadastro realizado! Bem-vindo.");
                 window.location.href = 'login.html';
             } else {
                 alert("Erro: " + data.message);
@@ -136,7 +118,6 @@
         }
     }
 
-    // Máscaras
     const maskCPF = (el) => el.value = el.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})/, '$1-$2').replace(/(-\d{2})\d+?$/, '$1');
     const maskPhone = (el) => {
         let r = el.value.replace(/\D/g, "").replace(/^0/, "");
