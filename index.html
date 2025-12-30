@@ -1,1 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEMADSA - Secretaria de Missões</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Montserrat:wght@700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
 
+        .hero-bg {
+            background-image: linear-gradient(rgba(30, 58, 138, 0.9), rgba(17, 24, 39, 0.95)), url('https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?q=80&w=2874&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <nav class="absolute top-0 w-full z-20 py-6">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="SEMADSA Logo" class="h-12 drop-shadow-lg">
+            <div class="hidden md:flex gap-4 text-white/80">
+                <a href="#" class="hover:text-white transition"><i class="fa-brands fa-instagram text-xl"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-bg min-h-[60vh] flex flex-col justify-center items-center text-center px-4 relative pt-20">
+        <div class="max-w-4xl mx-auto z-10 animate-fade-in-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
+                Secretaria de Missões
+            </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                Levando Esperança, <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Transformando Vidas</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Junte-se a nós nesta grande obra missionária. Sua contribuição é a semente que frutifica em lugares onde a esperança precisa chegar.
+            </p>
+        </div>
+        
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
+            <svg class="relative block w-[calc(100%+1.3px)] h-[60px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-gray-50"></path>
+            </svg>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 -mt-16 relative z-20 pb-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-green-500 card-hover flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl mb-6">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Quero Contribuir</h3>
+                <p class="text-gray-500 text-sm mb-6 flex-1">
+                    Ainda não faz parte? Cadastre-se agora, receba nosso informativo e torne-se um parceiro da missão.
+                </p>
+                <a href="cadastro.html" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                    Fazer Cadastro <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-blue-600 card-hover flex flex-col items-center text-center transform md:-translate-y-4">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-3xl mb-6 shadow-inner">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Área do Parceiro</h3>
+                <p class="text-gray-500 text-sm mb-6 flex-1">
+                    Já contribui conosco? Acesse seu painel para registrar doações e acompanhar sua evolução.
+                </p>
+                <a href="login.html" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-blue-500/30 shadow-lg transition flex items-center justify-center gap-2">
+                    Acessar Painel <i class="fa-solid fa-right-to-bracket"></i>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-gray-600 card-hover flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 text-2xl mb-6">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Gestão Administrativa</h3>
+                <p class="text-gray-500 text-sm mb-6 flex-1">
+                    Acesso restrito para líderes e administradores da secretaria gerenciarem os dados.
+                </p>
+                <a href="login_admin.html" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                    Acesso Gestor <i class="fa-solid fa-lock"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="mt-20 text-center max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold text-blue-900 mb-8">Nossos Pilares</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <i class="fa-solid fa-globe text-4xl text-blue-300 mb-4"></i>
+                    <h4 class="font-bold text-gray-700">Alcance Global</h4>
+                    <p class="text-xs text-gray-500 mt-2">Apoiando projetos em diversas nações.</p>
+                </div>
+                <div>
+                    <i class="fa-solid fa-hands-holding-circle text-4xl text-blue-300 mb-4"></i>
+                    <h4 class="font-bold text-gray-700">Ação Social</h4>
+                    <p class="text-xs text-gray-500 mt-2">Levando pão a quem tem fome.</p>
+                </div>
+                <div>
+                    <i class="fa-solid fa-book-bible text-4xl text-blue-300 mb-4"></i>
+                    <h4 class="font-bold text-gray-700">Evangelismo</h4>
+                    <p class="text-xs text-gray-500 mt-2">Propagando a verdade que liberta.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-blue-950 text-blue-200 py-8 mt-auto border-t border-blue-900">
+        <div class="container mx-auto px-6 text-center">
+            <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" class="h-10 mx-auto mb-4 opacity-50 grayscale hover:grayscale-0 transition duration-500">
+            <p class="text-sm mb-2">&copy; 2025 SEMADSA - Secretaria de Missões.</p>
+            <p class="text-xs opacity-50">Desenvolvido para o Reino.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
