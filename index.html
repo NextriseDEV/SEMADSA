@@ -27,16 +27,25 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
+
+        /* Animação do botão flutuante */
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+        .btn-floating {
+            animation: pulse-gold 2s infinite;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen relative">
 
     <nav class="absolute top-0 w-full z-20 py-6">
         <div class="container mx-auto px-6 flex justify-between items-center">
             <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="SEMADSA Logo" class="h-12 drop-shadow-lg">
             <div class="hidden md:flex gap-4 text-white/80">
                 <a href="#" class="hover:text-white transition"><i class="fa-brands fa-instagram text-xl"></i></a>
-                <a href="#" class="hover:text-white transition"><i class="fa-brands fa-whatsapp text-xl"></i></a>
             </div>
         </div>
     </nav>
@@ -128,6 +137,42 @@
         </div>
     </main>
 
+    <button onclick="document.getElementById('modalPixAnonimo').classList.remove('hidden')" class="btn-floating fixed bottom-8 right-8 z-50 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold p-4 rounded-full shadow-2xl transition transform hover:scale-110 flex items-center justify-center gap-2 group">
+        <i class="fa-solid fa-hand-holding-dollar text-2xl"></i>
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-sm">Ofertar Agora</span>
+    </button>
+
+    <div id="modalPixAnonimo" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative shadow-2xl transform transition-all scale-100">
+            <button onclick="document.getElementById('modalPixAnonimo').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+            
+            <div class="mb-4">
+                <span class="inline-block p-3 rounded-full bg-blue-100 text-blue-600 mb-2">
+                    <i class="fa-brands fa-pix text-2xl"></i>
+                </span>
+                <h3 class="text-xl font-bold text-gray-800">Oferta Voluntária</h3>
+                <p class="text-sm text-gray-500">Sua contribuição ajuda a manter a obra missionária.</p>
+            </div>
+            
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=pixsemadsa@adsabrasil.org.br" alt="QR Code PIX" class="mx-auto rounded-lg border border-gray-300 shadow-sm mb-4">
+                
+                <p class="text-xs text-gray-500 mb-1 font-semibold uppercase">Chave PIX (E-mail):</p>
+                <div class="flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg p-2">
+                    <code id="pixKey" class="text-sm font-mono font-bold text-blue-900 truncate">pixsemadsa@adsabrasil.org.br</code>
+                    <button onclick="copyPixKey()" class="text-gray-500 hover:text-blue-600 transition" title="Copiar">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+                <div id="copyFeedback" class="text-xs text-green-600 font-bold mt-2 opacity-0 transition-opacity duration-300">Copiado com sucesso!</div>
+            </div>
+            
+            <p class="text-xs text-gray-400 italic">"Deus ama ao que dá com alegria." <br> 2 Coríntios 9:7</p>
+        </div>
+    </div>
+
     <footer class="bg-blue-950 text-blue-200 py-8 mt-auto border-t border-blue-900">
         <div class="container mx-auto px-6 text-center">
             <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" class="h-10 mx-auto mb-4 opacity-50 grayscale hover:grayscale-0 transition duration-500">
@@ -136,5 +181,20 @@
         </div>
     </footer>
 
+    <script>
+        function copyPixKey() {
+            const keyText = document.getElementById('pixKey').innerText;
+            navigator.clipboard.writeText(keyText).then(() => {
+                const feedback = document.getElementById('copyFeedback');
+                feedback.classList.remove('opacity-0');
+                setTimeout(() => {
+                    feedback.classList.add('opacity-0');
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar: ', err);
+                alert("Não foi possível copiar automaticamente. Selecione e copie a chave manualmente.");
+            });
+        }
+    </script>
 </body>
 </html>
