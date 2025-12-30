@@ -8,8 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
+    
     <script>
+        // Auth Guard
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
+        // Ajuste o caminho se necessário (ex: se estiver na raiz, remova o ../)
         if(!user) window.location.href = '../login.html';
     </script>
 </head>
@@ -39,11 +42,22 @@
                 <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full font-bold">Voluntário</span>
             </div>
             <div class="p-6 text-center">
-                <p class="text-sm text-gray-600 mb-4">Para ofertas avulsas ou dízimos, utilize a chave abaixo:</p>
-                <div class="bg-gray-100 p-3 rounded-lg border border-dashed border-gray-400 inline-block mb-4">
-                    <p class="font-mono font-bold text-lg text-blue-900 select-all">pix@semadsa.com.br</p>
+                <p class="text-sm text-gray-600 mb-4">Para ofertas avulsas ou dízimos, utilize o QR Code abaixo:</p>
+                
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-4 inline-block w-full max-w-xs">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020126500014BR.GOV.BCB.PIX0128pixsemadsa@adsabrasil.org.br5204000053039865802BR5914IGREJA%20EVANGEL6007SAO%20PAU62280524000000000000000137448688630480C8" alt="QR Code PIX" class="mx-auto rounded-lg border border-gray-300 shadow-sm mb-4">
+                    
+                    <p class="text-xs text-gray-500 mb-1 font-semibold uppercase">Chave PIX (E-mail):</p>
+                    <div class="flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg p-2">
+                        <code id="pixKey" class="text-sm font-mono font-bold text-blue-900 truncate">pixsemadsa@adsabrasil.org.br</code>
+                        <button onclick="copyPixKey()" class="text-gray-500 hover:text-blue-600 transition" title="Copiar">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                    <div id="copyFeedback" class="text-xs text-green-600 font-bold mt-2 opacity-0 transition-opacity duration-300">Copiado com sucesso!</div>
                 </div>
-                <p class="text-xs text-gray-400">Banco XP - CNPJ: 00.000.000/0001-00</p>
+                
+                <p class="text-xs text-gray-400">Favorecido: IGREJA EVANGELICA ASSEMBLEIA DE DEUS</p>
             </div>
         </div>
 
@@ -101,7 +115,9 @@
     </main>
 
 <script>
+    // ⚠️ SUBSTITUA PELA SUA URL DEPLOY
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
+    
     const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     let myChart = null;
     
@@ -228,6 +244,21 @@
             type: 'bar',
             data: { labels: labels, datasets: [{ label: 'Valor (R$)', data: dataValues, backgroundColor: backgroundColors, borderRadius: 4 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+        });
+    }
+
+    // Função de Copiar Chave PIX
+    function copyPixKey() {
+        const keyText = document.getElementById('pixKey').innerText;
+        navigator.clipboard.writeText(keyText).then(() => {
+            const feedback = document.getElementById('copyFeedback');
+            feedback.classList.remove('opacity-0');
+            setTimeout(() => {
+                feedback.classList.add('opacity-0');
+            }, 2000);
+        }).catch(err => {
+            console.error('Erro ao copiar: ', err);
+            alert("Não foi possível copiar automaticamente. Selecione e copie a chave manualmente.");
         });
     }
 </script>
