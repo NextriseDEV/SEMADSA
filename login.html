@@ -7,13 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; } /* Fundo Escuro para Login */
-    </style>
+    <style> body { font-family: 'Inter', sans-serif; background-color: #111827; } </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="text-center mb-8">
+    <div class="text-center mb-8 relative w-full max-w-sm">
+        <a href="https://nextrisedev.github.io/SEMADSA/" class="absolute -top-10 left-0 text-gray-400 hover:text-white text-xs flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Voltar ao Início
+        </a>
         <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="Logo" class="h-24 mx-auto drop-shadow-2xl">
     </div>
 
@@ -32,9 +33,11 @@
                     <input type="password" id="loginSenha" class="w-full p-3 border rounded-lg bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition" placeholder="******" required>
                 </div>
                 
-                <button type="submit" id="btnLogin" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-lg transition">
-                    ENTRAR
-                </button>
+                <div class="text-right">
+                    <button type="button" onclick="openResetModal()" class="text-xs text-blue-600 hover:underline">Esqueci minha senha</button>
+                </div>
+
+                <button type="submit" id="btnLogin" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-lg transition">ENTRAR</button>
             </form>
         </div>
         <div class="bg-gray-50 p-4 text-center border-t">
@@ -42,46 +45,102 @@
         </div>
     </div>
 
+    <div id="resetModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-sm p-6 relative">
+            <button onclick="document.getElementById('resetModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="step1">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Recuperar Acesso</h3>
+                <p class="text-sm text-gray-500 mb-4">Informe seu CPF cadastrado. Enviaremos um código para seu e-mail.</p>
+                <input type="text" id="resetCpf" class="w-full p-3 border rounded mb-4" placeholder="CPF" oninput="maskCPF(this)">
+                <button onclick="sendResetCode()" class="w-full bg-blue-600 text-white py-2 rounded font-bold">Enviar Código</button>
+            </div>
+
+            <div id="step2" class="hidden">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Redefinir Senha</h3>
+                <p class="text-sm text-gray-500 mb-4">Informe o código recebido no e-mail.</p>
+                <input type="text" id="resetToken" class="w-full p-3 border rounded mb-2" placeholder="Código (6 dígitos)">
+                <input type="password" id="newPass" class="w-full p-3 border rounded mb-4" placeholder="Nova Senha">
+                <button onclick="confirmReset()" class="w-full bg-green-600 text-white py-2 rounded font-bold">Alterar Senha</button>
+            </div>
+        </div>
+    </div>
+
 <script>
+    // LINK DO SCRIPT
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
 
     async function handleLogin(e) {
         e.preventDefault();
         const btn = document.getElementById('btnLogin');
         const originalText = btn.innerText;
-        btn.innerText = "Validando...";
-        btn.disabled = true;
+        btn.innerText = "Validando..."; btn.disabled = true;
 
         const cpf = document.getElementById('loginCpf').value;
         const senha = document.getElementById('loginSenha').value;
 
         try {
             const res = await fetch(API_URL, { 
-                method: 'POST', 
-                body: JSON.stringify({ action: 'login', cpf: cpf, senha: senha }) 
+                method: 'POST', body: JSON.stringify({ action: 'login', cpf: cpf, senha: senha }) 
             });
             const data = await res.json();
 
             if(data.status === 'success') {
                 localStorage.setItem('semadsa_user', JSON.stringify(data.user));
-                
-                if(data.user.nivel === 'admin') {
-                    window.location.href = 'gestao/painel_admin.html';
-                } else {
-                    window.location.href = 'gestao/painel_contribuinte.html';
-                }
+                window.location.href = 'gestao/painel_contribuinte.html';
             } else {
                 alert(data.message);
-                btn.innerText = originalText;
-                btn.disabled = false;
+                btn.innerText = originalText; btn.disabled = false;
             }
         } catch (err) {
-            console.error(err);
-            alert("Erro ao conectar.");
-            btn.innerText = originalText;
-            btn.disabled = false;
+            console.error(err); alert("Erro ao conectar.");
+            btn.innerText = originalText; btn.disabled = false;
         }
     }
+
+    // Reset Password Logic
+    function openResetModal() {
+        document.getElementById('resetModal').classList.remove('hidden');
+        document.getElementById('step1').classList.remove('hidden');
+        document.getElementById('step2').classList.add('hidden');
+    }
+
+    async function sendResetCode() {
+        const cpf = document.getElementById('resetCpf').value;
+        if(!cpf) return alert("Informe o CPF");
+        
+        const res = await fetch(API_URL, { 
+            method: 'POST', body: JSON.stringify({ action: 'requestReset', type: 'contribuinte', identifier: cpf }) 
+        });
+        const data = await res.json();
+        
+        if(data.status === 'success') {
+            alert(data.message);
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        } else {
+            alert(data.message);
+        }
+    }
+
+    async function confirmReset() {
+        const cpf = document.getElementById('resetCpf').value;
+        const code = document.getElementById('resetToken').value;
+        const pass = document.getElementById('newPass').value;
+        
+        const res = await fetch(API_URL, { 
+            method: 'POST', body: JSON.stringify({ action: 'confirmReset', type: 'contribuinte', identifier: cpf, code: code, newPassword: pass }) 
+        });
+        const data = await res.json();
+        
+        if(data.status === 'success') {
+            alert("Senha alterada! Faça login.");
+            document.getElementById('resetModal').classList.add('hidden');
+        } else {
+            alert(data.message);
+        }
+    }
+
     const maskCPF = (el) => el.value = el.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})/, '$1-$2').replace(/(-\d{2})\d+?$/, '$1');
 </script>
 </body>
