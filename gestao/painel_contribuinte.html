@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Contribuinte - SEMADSA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
+    
     <script>
         // Auth Guard
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
@@ -58,6 +60,14 @@
 
                 <div id="msgObrigado" class="hidden mt-6 bg-blue-50 p-4 rounded-xl text-blue-800 font-bold border border-blue-100">
                     <i class="fa-solid fa-heart text-red-500 animate-pulse"></i> Obrigado por manter a missão viva!
+                    <div class="mt-10 border-t border-gray-100 pt-8">
+                    <h3 class="text-blue-900 font-bold text-lg mb-4 text-left flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column"></i> Minha Evolução
+                    </h3>
+                    <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100 h-64">
+                        <canvas id="historyChart"></canvas>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -68,20 +78,20 @@
     </main>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+const API_URL = 'https://script.google.com/macros/s/SEU_ID_DO_SCRIPT_AQUI/exec'; // ATENÇÃO: Mantenha sua URL aqui
+    const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    let myChart = null;
     
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
         document.getElementById('userName').innerText = user.nome;
         const d = new Date();
-        document.getElementById('currentDateDisplay').innerText = `${meses[d.getMonth()]} ${d.getFullYear()}`;
+        document.getElementById('currentDateDisplay').innerText = `${meses[d.getMonth()]} ${d.getFullYear()}`; // Ex: Jan 2025
         loadStatus();
     }
 
     async function loadStatus() {
-        // Busca status atual no Backend
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboardData', userId: user.id }) });
         const data = await res.json();
         
@@ -91,11 +101,13 @@
         const input = document.getElementById('valorInput');
         const msg = document.getElementById('msgObrigado');
 
+        // Configura Status Atual
         if(data.contribuiu === 'SIM') {
             toggle.checked = true;
             label.innerText = "SIM";
             input.value = data.valor;
-            container.classList.add('hidden'); // Esconde o input se já salvou
+            // Se já contribuiu, mostra mensagem de agradecimento e esconde input
+            container.classList.add('hidden');
             msg.classList.remove('hidden');
         } else {
             toggle.checked = false;
@@ -103,6 +115,9 @@
             container.classList.add('hidden');
             msg.classList.add('hidden');
         }
+
+        // Renderiza Gráfico
+        renderChart(data.history);
     }
 
     function toggleState() {
@@ -118,8 +133,7 @@
         } else {
             label.innerText = "NÃO";
             container.classList.add('hidden');
-            // Se desmarcar, avisa o backend para remover/zerar
-            saveContribution(false);
+            saveContribution(false); // Salva imediatamente como NÃO ao desmarcar
         }
     }
 
@@ -127,10 +141,10 @@
         const val = document.getElementById('valorInput').value;
         const btn = document.querySelector('#valorContainer button');
         
-        if(isActive && (!val || val <= 0)) { alert("Informe um valor válido."); return; }
+        // REGRA DE AJUSTE: Valor agora é opcional. Removemos a validação de bloqueio.
         
         if(isActive) {
-            btn.innerHTML = "Salvando...";
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
             btn.disabled = true;
         }
 
@@ -139,7 +153,7 @@
             userId: user.id,
             userName: user.nome,
             contribuiu: isActive,
-            valor: isActive ? val : 0
+            valor: (isActive && val) ? val : 0 // Se não informar valor, envia 0
         };
 
         try {
@@ -150,14 +164,74 @@
                 document.getElementById('msgObrigado').classList.remove('hidden');
                 btn.innerHTML = 'CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>';
                 btn.disabled = false;
-            } else {
-                alert("Status atualizado para NÃO Contribuiu.");
-            }
+            } 
+            
+            // Recarrega o gráfico para mostrar a atualização
+            loadStatus();
 
         } catch(e) {
             alert("Erro ao salvar.");
             console.error(e);
+            if(isActive) {
+                btn.innerHTML = 'Tentar Novamente';
+                btn.disabled = false;
+            }
         }
+    }
+
+    function renderChart(history) {
+        const ctx = document.getElementById('historyChart').getContext('2d');
+        
+        // Prepara dados
+        const labels = history.map(h => `${meses[h.mes - 1]}/${h.ano.toString().slice(-2)}`);
+        const dataValues = history.map(h => h.valor || 0);
+        const backgroundColors = history.map(h => h.status === 'SIM' ? '#2563eb' : '#e5e7eb'); // Azul se sim, Cinza se não
+
+        if(myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Contribuição (R$)',
+                    data: dataValues,
+                    backgroundColor: backgroundColors,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [2, 4], color: '#e5e7eb' },
+                        ticks: { font: { size: 10 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
     }
 </script>
 </body>
