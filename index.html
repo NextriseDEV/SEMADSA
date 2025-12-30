@@ -20,37 +20,30 @@
             background-position: center;
         }
 
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
 
-        /* Animação do botão flutuante: Abrindo e Fechando o texto */
+        /* Animação Botão Flutuante (Reveal) */
         @keyframes reveal-text {
-            0%, 20% { max-width: 0; opacity: 0; margin-left: 0; } /* Fechado (só ícone) */
-            30%, 85% { max-width: 150px; opacity: 1; margin-left: 0.5rem; } /* Aberto (mostra texto) */
-            100% { max-width: 0; opacity: 0; margin-left: 0; } /* Fecha novamente */
+            0%, 20% { max-width: 0; opacity: 0; margin-left: 0; }
+            30%, 85% { max-width: 150px; opacity: 1; margin-left: 0.5rem; }
+            100% { max-width: 0; opacity: 0; margin-left: 0; }
         }
-
         @keyframes pulse-shadow {
             0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
             100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
         }
-
-        .btn-floating {
-            animation: pulse-shadow 2s infinite;
-        }
-        
+        .btn-floating { animation: pulse-shadow 2s infinite; }
         .btn-text-anim {
-            overflow: hidden;
-            white-space: nowrap;
-            display: inline-block;
-            animation: reveal-text 5s infinite ease-in-out; /* Ciclo de 5 segundos */
+            overflow: hidden; white-space: nowrap; display: inline-block;
+            animation: reveal-text 5s infinite ease-in-out;
         }
+
+        /* Steps do Modal */
+        .step-hidden { display: none; }
+        .step-visible { animation: fadeIn 0.5s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen relative">
@@ -87,103 +80,116 @@
 
     <main class="container mx-auto px-6 -mt-16 relative z-20 pb-20">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
             <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-green-500 card-hover flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl mb-6">
-                    <i class="fa-solid fa-hand-holding-heart"></i>
-                </div>
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl mb-6"><i class="fa-solid fa-hand-holding-heart"></i></div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Quero Contribuir</h3>
-                <p class="text-gray-500 text-sm mb-6 flex-1">
-                    Ainda não faz parte? Cadastre-se agora, receba nosso informativo e torne-se um parceiro da missão.
-                </p>
-                <a href="cadastro.html" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                    Fazer Cadastro <i class="fa-solid fa-arrow-right"></i>
-                </a>
+                <p class="text-gray-500 text-sm mb-6 flex-1">Cadastre-se para receber informativos, acompanhar sua evolução e ser um parceiro ativo.</p>
+                <a href="cadastro.html" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">Fazer Cadastro <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-
             <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-blue-600 card-hover flex flex-col items-center text-center transform md:-translate-y-4">
-                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-3xl mb-6 shadow-inner">
-                    <i class="fa-solid fa-user-check"></i>
-                </div>
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-3xl mb-6 shadow-inner"><i class="fa-solid fa-user-check"></i></div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-2">Área do Parceiro</h3>
-                <p class="text-gray-500 text-sm mb-6 flex-1">
-                    Já contribui conosco? Acesse seu painel para registrar doações e acompanhar sua evolução.
-                </p>
-                <a href="login.html" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-blue-500/30 shadow-lg transition flex items-center justify-center gap-2">
-                    Acessar Painel <i class="fa-solid fa-right-to-bracket"></i>
-                </a>
+                <p class="text-gray-500 text-sm mb-6 flex-1">Já contribui conosco? Acesse seu painel para registrar doações e acompanhar sua evolução.</p>
+                <a href="login.html" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-blue-500/30 shadow-lg transition flex items-center justify-center gap-2">Acessar Painel <i class="fa-solid fa-right-to-bracket"></i></a>
             </div>
-
             <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-gray-600 card-hover flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 text-2xl mb-6">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 text-2xl mb-6"><i class="fa-solid fa-shield-halved"></i></div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Gestão Administrativa</h3>
-                <p class="text-gray-500 text-sm mb-6 flex-1">
-                    Acesso restrito para líderes e administradores da secretaria gerenciarem os dados.
-                </p>
-                <a href="login_admin.html" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                    Acesso Gestor <i class="fa-solid fa-lock"></i>
-                </a>
+                <p class="text-gray-500 text-sm mb-6 flex-1">Acesso restrito para líderes e administradores da secretaria gerenciarem os dados.</p>
+                <a href="login_admin.html" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">Acesso Gestor <i class="fa-solid fa-lock"></i></a>
             </div>
-
         </div>
 
         <div class="mt-20 text-center max-w-3xl mx-auto">
             <h2 class="text-2xl font-bold text-blue-900 mb-8">Nossos Pilares</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <i class="fa-solid fa-globe text-4xl text-blue-300 mb-4"></i>
-                    <h4 class="font-bold text-gray-700">Alcance Global</h4>
-                    <p class="text-xs text-gray-500 mt-2">Apoiando projetos em diversas nações.</p>
-                </div>
-                <div>
-                    <i class="fa-solid fa-hands-holding-circle text-4xl text-blue-300 mb-4"></i>
-                    <h4 class="font-bold text-gray-700">Ação Social</h4>
-                    <p class="text-xs text-gray-500 mt-2">Levando pão a quem tem fome.</p>
-                </div>
-                <div>
-                    <i class="fa-solid fa-book-bible text-4xl text-blue-300 mb-4"></i>
-                    <h4 class="font-bold text-gray-700">Evangelismo</h4>
-                    <p class="text-xs text-gray-500 mt-2">Propagando a verdade que liberta.</p>
-                </div>
+                <div><i class="fa-solid fa-globe text-4xl text-blue-300 mb-4"></i><h4 class="font-bold text-gray-700">Alcance Global</h4><p class="text-xs text-gray-500 mt-2">Apoiando projetos em diversas nações.</p></div>
+                <div><i class="fa-solid fa-hands-holding-circle text-4xl text-blue-300 mb-4"></i><h4 class="font-bold text-gray-700">Ação Social</h4><p class="text-xs text-gray-500 mt-2">Levando pão a quem tem fome.</p></div>
+                <div><i class="fa-solid fa-book-bible text-4xl text-blue-300 mb-4"></i><h4 class="font-bold text-gray-700">Evangelismo</h4><p class="text-xs text-gray-500 mt-2">Propagando a verdade que liberta.</p></div>
             </div>
         </div>
     </main>
 
-    <button onclick="document.getElementById('modalPixAnonimo').classList.remove('hidden')" class="btn-floating fixed bottom-8 right-8 z-50 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold p-4 rounded-full shadow-2xl transition transform flex items-center justify-center group">
+    <button onclick="openPixModal()" class="btn-floating fixed bottom-8 right-8 z-50 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold p-4 rounded-full shadow-2xl transition transform flex items-center justify-center group">
         <i class="fa-solid fa-hand-holding-dollar text-2xl"></i>
         <span class="btn-text-anim text-sm">Ofertar Agora!</span>
     </button>
 
-    <div id="modalPixAnonimo" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative shadow-2xl transform transition-all scale-100">
-            <button onclick="document.getElementById('modalPixAnonimo').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
+    <div id="modalPixAnonimo" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative shadow-2xl transform transition-all scale-100 overflow-hidden">
+            <button onclick="closePixModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition z-10"><i></i></button>
             
-            <div class="mb-4">
-                <span class="inline-block p-3 rounded-full bg-blue-100 text-blue-600 mb-2">
-                    <i class="fa-brands fa-pix text-2xl"></i>
-                </span>
-                <h3 class="text-xl font-bold text-gray-800">Oferta Voluntária</h3>
-                <p class="text-sm text-gray-500">Sua contribuição ajuda a manter a obra missionária.</p>
-            </div>
-            
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020126500014BR.GOV.BCB.PIX0128pixsemadsa@adsabrasil.org.br5204000053039865802BR5914IGREJA%20EVANGEL6007SAO%20PAU62280524000000000000000137448688630480C8" alt="QR Code PIX" class="mx-auto rounded-lg border border-gray-300 shadow-sm mb-4">
-                
-                <p class="text-xs text-gray-500 mb-1 font-semibold uppercase">Chave PIX (E-mail):</p>
-                <div class="flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg p-2">
-                    <code id="pixKey" class="text-sm font-mono font-bold text-blue-900 truncate">pixsemadsa@adsabrasil.org.br</code>
-                    <button onclick="copyPixKey()" class="text-gray-500 hover:text-blue-600 transition" title="Copiar">
-                        <i class="fa-regular fa-copy"></i>
-                    </button>
+            <div id="step-pix" class="step-visible">
+                <div class="mb-4">
+                    <span class="inline-block p-3 rounded-full bg-blue-100 text-blue-600 mb-2"><i class="fa-brands fa-pix text-2xl"></i></span>
+                    <h3 class="text-xl font-bold text-gray-800">Oferta Voluntária</h3>
+                    <p class="text-sm text-gray-500">Contribua e ajude a manter a obra.</p>
                 </div>
-                <div id="copyFeedback" class="text-xs text-green-600 font-bold mt-2 opacity-0 transition-opacity duration-300">Copiado com sucesso!</div>
+                
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-4">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020126500014BR.GOV.BCB.PIX0128pixsemadsa@adsabrasil.org.br5204000053039865802BR5914IGREJA%20EVANGEL6007SAO%20PAU62280524000000000000000137448688630480C8" alt="QR Code PIX" class="mx-auto rounded-lg border border-gray-300 shadow-sm mb-4">
+                    
+                    <p class="text-xs text-gray-500 mb-1 font-semibold uppercase">Chave PIX (E-mail):</p>
+                    <div class="flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg p-2 mb-2">
+                        <code id="pixKey" class="text-sm font-mono font-bold text-blue-900 truncate">pixsemadsa@adsabrasil.org.br</code>
+                        <button onclick="copyPixKey()" class="text-gray-500 hover:text-blue-600 transition"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div id="copyFeedback" class="text-xs text-green-600 font-bold opacity-0 transition-opacity duration-300">Copiado!</div>
+                </div>
+
+                <button onclick="nextStepValue()" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check"></i> Já Realizei a Oferta
+                </button>
+                <p class="text-xs text-gray-400 italic mt-3">"Deus ama ao que dá com alegria."</p>
             </div>
-            
-            <p class="text-xs text-gray-400 italic">"Deus ama ao que dá com alegria." <br> 2 Coríntios 9:7</p>
+
+            <div id="step-value" class="step-hidden">
+                <div class="mb-6">
+                    <span class="inline-block p-3 rounded-full bg-green-100 text-green-600 mb-2"><i class="fa-solid fa-hand-holding-dollar text-2xl"></i></span>
+                    <h3 class="text-xl font-bold text-gray-800">Glória a Deus!</h3>
+                    <p class="text-sm text-gray-500 mt-2">Gostaria de informar o valor para nosso <br><strong>Termômetro Missionário</strong>?</p>
+                    <p class="text-xs text-gray-400">(Isso incentiva outros a contribuírem também)</p>
+                </div>
+
+                <div class="mb-6">
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-gray-500 font-bold">R$</span>
+                        <input type="number" id="anonValue" class="w-full pl-10 pr-4 py-3 border-2 border-green-100 rounded-xl focus:border-green-500 focus:ring-green-500 outline-none text-lg font-bold text-gray-700" placeholder="0,00">
+                    </div>
+                </div>
+
+                <button id="btnConfirmAnon" onclick="submitAnonymousDonation()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition mb-3">
+                    Confirmar Valor
+                </button>
+                <button onclick="submitAnonymousDonation(true)" class="text-sm text-gray-500 hover:text-gray-700 font-medium underline decoration-dotted">
+                    Prefiro não informar (Pular)
+                </button>
+            </div>
+
+            <div id="step-loading" class="step-hidden py-10">
+                <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+                <p class="text-gray-600 font-bold">Registrando sua semente...</p>
+            </div>
+
+            <div id="step-success" class="step-hidden">
+                <div class="mb-6">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl mx-auto mb-4 animate-bounce">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Oferta Registrada!</h3>
+                    <p class="text-sm text-gray-600 mt-2 leading-relaxed">
+                        Muito obrigado! Quer acompanhar os frutos dessa semente e receber <strong>Cartas do Campo Missionário</strong>?
+                    </p>
+                </div>
+
+                <a href="cadastro.html" class="block w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg transition mb-3">
+                    Sim! Quero receber notícias
+                </a>
+                <button onclick="closePixModal()" class="text-sm text-gray-400 hover:text-gray-600">
+                    Fechar e voltar ao início
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -196,17 +202,64 @@
     </footer>
 
     <script>
+        // ⚠️ URL DO SCRIPT (Backend)
+        const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
+
+        // Lógica do Modal
+        function openPixModal() {
+            document.getElementById('modalPixAnonimo').classList.remove('hidden');
+            resetModalFlow();
+        }
+
+        function closePixModal() {
+            document.getElementById('modalPixAnonimo').classList.add('hidden');
+        }
+
+        function resetModalFlow() {
+            showStep('step-pix');
+            document.getElementById('anonValue').value = '';
+        }
+
+        function showStep(stepId) {
+            ['step-pix', 'step-value', 'step-loading', 'step-success'].forEach(id => {
+                document.getElementById(id).classList.add('step-hidden');
+                document.getElementById(id).classList.remove('step-visible');
+            });
+            document.getElementById(stepId).classList.remove('step-hidden');
+            document.getElementById(stepId).classList.add('step-visible');
+        }
+
+        function nextStepValue() {
+            showStep('step-value');
+        }
+
+        async function submitAnonymousDonation(skipValue = false) {
+            const valor = skipValue ? 0 : document.getElementById('anonValue').value;
+            
+            showStep('step-loading');
+
+            try {
+                // Envia para o backend para registrar em "Transacoes" como ANÔNIMO
+                await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'registerAnonymousDonation', valor: valor }) 
+                });
+                // Sucesso (mesmo se falhar rede, mostramos sucesso para UX positiva, pois Pix já foi feito)
+                setTimeout(() => showStep('step-success'), 1500); 
+            } catch (e) {
+                console.error(e);
+                showStep('step-success'); // Prossegue mesmo com erro de rede
+            }
+        }
+
         function copyPixKey() {
             const keyText = document.getElementById('pixKey').innerText;
             navigator.clipboard.writeText(keyText).then(() => {
                 const feedback = document.getElementById('copyFeedback');
                 feedback.classList.remove('opacity-0');
-                setTimeout(() => {
-                    feedback.classList.add('opacity-0');
-                }, 2000);
+                setTimeout(() => feedback.classList.add('opacity-0'), 2000);
             }).catch(err => {
-                console.error('Erro ao copiar: ', err);
-                alert("Não foi possível copiar automaticamente. Selecione e copie a chave manualmente.");
+                alert("Copie manualmente: " + keyText);
             });
         }
     </script>
