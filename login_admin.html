@@ -13,7 +13,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="text-center mb-8">
+    <div class="text-center mb-8 relative w-full max-w-sm">
+        <a href="index.html" class="absolute -top-10 left-0 text-gray-400 hover:text-white text-xs flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Voltar ao Início
+        </a>
         <img src="https://nextrisedev.github.io/SEMADSA/SEMADSA-LOGO-PNG.png" alt="Logo" class="h-24 mx-auto drop-shadow-2xl">
         <span class="inline-block mt-2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Área Restrita</span>
     </div>
@@ -39,6 +42,10 @@
                     </div>
                 </div>
                 
+                <div class="text-right">
+                    <button type="button" onclick="openResetModal()" class="text-xs text-blue-600 hover:underline">Esqueci minha senha</button>
+                </div>
+
                 <button type="submit" id="btnLogin" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:-translate-y-1">
                     ACESSAR PAINEL
                 </button>
@@ -48,6 +55,36 @@
             <a href="login.html" class="text-xs text-gray-500 hover:text-blue-600 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para Área do Contribuinte
             </a>
+        </div>
+    </div>
+
+    <div id="resetModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-sm p-6 relative">
+            <button onclick="document.getElementById('resetModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="step1">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Recuperar Acesso Gestor</h3>
+                <p class="text-sm text-gray-500 mb-4">Informe seu e-mail cadastrado. Enviaremos um código de verificação.</p>
+                
+                <div class="relative mb-4">
+                    <i class="fa-solid fa-envelope absolute left-3 top-3 text-gray-400"></i>
+                    <input type="email" id="resetEmail" class="w-full pl-10 pr-3 py-3 border rounded-lg focus:border-blue-500 outline-none" placeholder="seu@email.com">
+                </div>
+                
+                <button onclick="sendResetCode()" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 rounded-lg font-bold transition">Enviar Código</button>
+            </div>
+
+            <div id="step2" class="hidden">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Redefinir Senha</h3>
+                <p class="text-sm text-gray-500 mb-4">Informe o código recebido e a nova senha.</p>
+                
+                <div class="space-y-3">
+                    <input type="text" id="resetToken" class="w-full p-3 border rounded-lg focus:border-blue-500 outline-none text-center tracking-widest font-bold" placeholder="Código (6 dígitos)">
+                    <input type="password" id="newPass" class="w-full p-3 border rounded-lg focus:border-blue-500 outline-none" placeholder="Nova Senha">
+                </div>
+                
+                <button onclick="confirmReset()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold mt-4 transition">Alterar Senha</button>
+            </div>
         </div>
     </div>
 
@@ -86,6 +123,55 @@
             alert("Erro de conexão com o servidor.");
             btn.innerText = originalText;
             btn.disabled = false;
+        }
+    }
+
+    // --- LÓGICA DE RECUPERAÇÃO DE SENHA (ADMIN) ---
+    function openResetModal() {
+        document.getElementById('resetModal').classList.remove('hidden');
+        document.getElementById('step1').classList.remove('hidden');
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('resetEmail').value = '';
+        document.getElementById('resetToken').value = '';
+        document.getElementById('newPass').value = '';
+    }
+
+    async function sendResetCode() {
+        const email = document.getElementById('resetEmail').value;
+        if(!email) return alert("Por favor, informe o e-mail de cadastro.");
+        
+        // Botão visual feedback (opcional, simples alert por enquanto)
+        const res = await fetch(API_URL, { 
+            method: 'POST', body: JSON.stringify({ action: 'requestReset', type: 'admin', identifier: email }) 
+        });
+        const data = await res.json();
+        
+        if(data.status === 'success') {
+            alert(data.message);
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        } else {
+            alert(data.message);
+        }
+    }
+
+    async function confirmReset() {
+        const email = document.getElementById('resetEmail').value;
+        const code = document.getElementById('resetToken').value;
+        const pass = document.getElementById('newPass').value;
+        
+        if(!code || !pass) return alert("Preencha todos os campos.");
+
+        const res = await fetch(API_URL, { 
+            method: 'POST', body: JSON.stringify({ action: 'confirmReset', type: 'admin', identifier: email, code: code, newPassword: pass }) 
+        });
+        const data = await res.json();
+        
+        if(data.status === 'success') {
+            alert("Senha alterada com sucesso! Faça login com a nova senha.");
+            document.getElementById('resetModal').classList.add('hidden');
+        } else {
+            alert(data.message);
         }
     }
 </script>
