@@ -12,6 +12,7 @@
     <script>
         // Auth Guard
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
+        // Ajustado para voltar uma pasta apenas (considerando estar em /gestao)
         if(!user) window.location.href = '../login.html';
     </script>
 </head>
@@ -34,7 +35,7 @@
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
             <div class="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center">
                 <p class="opacity-80 text-sm">Olá, <span id="userName" class="font-bold">...</span></p>
-                <h2 class="text-3xl font-bold mt-2" id="currentDateDisplay">Janeiro 2025</h2>
+                <h2 class="text-3xl font-bold mt-2" id="currentDateDisplay">...</h2>
                 <p class="text-sm mt-1">Status da Contribuição</p>
             </div>
 
@@ -48,19 +49,21 @@
                 </label>
 
                 <div id="valorContainer" class="hidden transition-all duration-500 ease-in-out">
-                    <label class="block text-left text-xs font-bold text-blue-800 uppercase mb-1">Qual o valor?</label>
+                    <label class="block text-left text-xs font-bold text-blue-800 uppercase mb-1">Qual o valor? (Opcional)</label>
                     <div class="flex items-center border-b-2 border-blue-600 py-2">
                         <span class="text-xl font-bold text-gray-500 mr-2">R$</span>
                         <input type="number" id="valorInput" class="appearance-none bg-transparent border-none w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none text-2xl font-bold" placeholder="0,00">
                     </div>
-                    <button onclick="saveContribution()" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                    <button onclick="saveContribution(true)" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg transition">
                         CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>
                     </button>
                 </div>
 
                 <div id="msgObrigado" class="hidden mt-6 bg-blue-50 p-4 rounded-xl text-blue-800 font-bold border border-blue-100">
                     <i class="fa-solid fa-heart text-red-500 animate-pulse"></i> Obrigado por manter a missão viva!
-                    <div class="mt-10 border-t border-gray-100 pt-8">
+                </div>
+                
+                <div class="mt-10 border-t border-gray-100 pt-8">
                     <h3 class="text-blue-900 font-bold text-lg mb-4 text-left flex items-center gap-2">
                         <i class="fa-solid fa-chart-column"></i> Minha Evolução
                     </h3>
@@ -68,7 +71,7 @@
                         <canvas id="historyChart"></canvas>
                     </div>
                 </div>
-                </div>
+
             </div>
         </div>
 
@@ -78,7 +81,9 @@
     </main>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec'; // ATENÇÃO: Mantenha sua URL aqui
+    // ⚠️ SUBSTITUA PELA SUA URL NOVA (CASO TENHA GERADO NOVO DEPLOY)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
+    
     const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     let myChart = null;
     
@@ -87,37 +92,39 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20r
     function init() {
         document.getElementById('userName').innerText = user.nome;
         const d = new Date();
-        document.getElementById('currentDateDisplay').innerText = `${meses[d.getMonth()]} ${d.getFullYear()}`; // Ex: Jan 2025
+        document.getElementById('currentDateDisplay').innerText = `${meses[d.getMonth()]} ${d.getFullYear()}`;
         loadStatus();
     }
 
     async function loadStatus() {
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboardData', userId: user.id }) });
-        const data = await res.json();
-        
-        const toggle = document.getElementById('toggleContrib');
-        const container = document.getElementById('valorContainer');
-        const label = document.getElementById('statusLabel');
-        const input = document.getElementById('valorInput');
-        const msg = document.getElementById('msgObrigado');
+        try {
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboardData', userId: user.id }) });
+            const data = await res.json();
+            
+            const toggle = document.getElementById('toggleContrib');
+            const container = document.getElementById('valorContainer');
+            const label = document.getElementById('statusLabel');
+            const input = document.getElementById('valorInput');
+            const msg = document.getElementById('msgObrigado');
 
-        // Configura Status Atual
-        if(data.contribuiu === 'SIM') {
-            toggle.checked = true;
-            label.innerText = "SIM";
-            input.value = data.valor;
-            // Se já contribuiu, mostra mensagem de agradecimento e esconde input
-            container.classList.add('hidden');
-            msg.classList.remove('hidden');
-        } else {
-            toggle.checked = false;
-            label.innerText = "NÃO";
-            container.classList.add('hidden');
-            msg.classList.add('hidden');
+            if(data.contribuiu === 'SIM') {
+                toggle.checked = true;
+                label.innerText = "SIM";
+                input.value = data.valor;
+                container.classList.add('hidden');
+                msg.classList.remove('hidden');
+            } else {
+                toggle.checked = false;
+                label.innerText = "NÃO";
+                container.classList.add('hidden');
+                msg.classList.add('hidden');
+            }
+
+            renderChart(data.history);
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+            alert("Falha ao carregar informações. Verifique sua conexão.");
         }
-
-        // Renderiza Gráfico
-        renderChart(data.history);
     }
 
     function toggleState() {
@@ -133,17 +140,17 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20r
         } else {
             label.innerText = "NÃO";
             container.classList.add('hidden');
-            saveContribution(false); // Salva imediatamente como NÃO ao desmarcar
+            msg.classList.add('hidden');
+            // Salva como NÃO imediatamente
+            saveContribution(false); 
         }
     }
 
-    async function saveContribution(isActive = true) {
+    async function saveContribution(isActive) {
         const val = document.getElementById('valorInput').value;
         const btn = document.querySelector('#valorContainer button');
         
-        // REGRA DE AJUSTE: Valor agora é opcional. Removemos a validação de bloqueio.
-        
-        if(isActive) {
+        if(isActive && btn) {
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
             btn.disabled = true;
         }
@@ -153,39 +160,41 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20r
             userId: user.id,
             userName: user.nome,
             contribuiu: isActive,
-            valor: (isActive && val) ? val : 0 // Se não informar valor, envia 0
+            valor: (isActive && val) ? val : 0 // Valor Opcional (envia 0 se vazio)
         };
 
         try {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const data = await res.json();
             
-            if(isActive) {
-                document.getElementById('valorContainer').classList.add('hidden');
-                document.getElementById('msgObrigado').classList.remove('hidden');
-                btn.innerHTML = 'CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>';
-                btn.disabled = false;
-            } 
-            
-            // Recarrega o gráfico para mostrar a atualização
-            loadStatus();
+            if(data.status === 'success') {
+                if(isActive) {
+                    document.getElementById('valorContainer').classList.add('hidden');
+                    document.getElementById('msgObrigado').classList.remove('hidden');
+                }
+                loadStatus(); // Atualiza gráfico e estado
+            } else {
+                throw new Error(data.message);
+            }
 
         } catch(e) {
-            alert("Erro ao salvar.");
+            alert("Erro ao salvar: " + e.message);
             console.error(e);
-            if(isActive) {
-                btn.innerHTML = 'Tentar Novamente';
+        } finally {
+            if(isActive && btn) {
+                btn.innerHTML = 'CONFIRMAR CONTRIBUIÇÃO <i class="fa-solid fa-check"></i>';
                 btn.disabled = false;
             }
         }
     }
 
     function renderChart(history) {
+        if (!history) return;
         const ctx = document.getElementById('historyChart').getContext('2d');
         
-        // Prepara dados
         const labels = history.map(h => `${meses[h.mes - 1]}/${h.ano.toString().slice(-2)}`);
         const dataValues = history.map(h => h.valor || 0);
-        const backgroundColors = history.map(h => h.status === 'SIM' ? '#2563eb' : '#e5e7eb'); // Azul se sim, Cinza se não
+        const backgroundColors = history.map(h => h.status === 'SIM' ? '#2563eb' : '#e5e7eb');
 
         if(myChart) myChart.destroy();
 
@@ -197,38 +206,16 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20r
                     label: 'Contribuição (R$)',
                     data: dataValues,
                     backgroundColor: backgroundColors,
-                    borderRadius: 4,
-                    borderSkipped: false
+                    borderRadius: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) { label += ': '; }
-                                if (context.parsed.y !== null) {
-                                    label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [2, 4], color: '#e5e7eb' },
-                        ticks: { font: { size: 10 } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 10 } }
-                    }
+                    y: { beginAtZero: true, grid: { borderDash: [2, 4], color: '#e5e7eb' }, ticks: { font: { size: 10 } } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
                 }
             }
         });
