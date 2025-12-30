@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão - SEMADSA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
     <script>
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
-        if(!user || user.nivel !== 'admin') window.location.href = '../login.html';
+        
+        // REGRA DE SEGURANÇA:
+        // O usuário só entra aqui se o Backend devolveu nivel: 'admin'.
+        // Isso acontece se o nome contiver "ADMIN" ou a coluna Status na planilha for "ADMIN".
+        if(!user || user.nivel !== 'admin') {
+            alert("Acesso Negado. Verifique se seu usuário possui permissões de Administrador.");
+            window.location.href = '../login.html';
+        }
     </script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -88,39 +96,42 @@
     </div>
 
 <script>
+    // ⚠️ SUBSTITUA PELA SUA URL NOVA
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
     let chartInstance = null;
 
     document.addEventListener('DOMContentLoaded', loadAdminData);
 
     async function loadAdminData() {
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getAdminData' }) });
-        const data = await res.json();
+        try {
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getAdminData' }) });
+            const data = await res.json();
 
-        if(data.status === 'success') {
-            // KPIs
-            document.getElementById('kpiTotal').innerText = Number(data.total).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-            document.getElementById('kpiUsers').innerText = data.users.length;
+            if(data.status === 'success') {
+                document.getElementById('kpiTotal').innerText = Number(data.total).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+                document.getElementById('kpiUsers').innerText = data.users.length;
 
-            // Table
-            const tbody = document.getElementById('userTableBody');
-            data.users.slice(0, 10).forEach(u => {
-                tbody.innerHTML += `
-                    <tr class="border-b">
-                        <td class="p-2 font-bold text-gray-700">${u.nome}</td>
-                        <td class="p-2 text-blue-500"><a href="https://wa.me/55${u.whatsapp.replace(/\D/g,'')}" target="_blank"><i class="fa-brands fa-whatsapp"></i></a></td>
-                    </tr>
-                `;
-            });
-
-            // Chart Init
-            initChart(data.chart);
+                const tbody = document.getElementById('userTableBody');
+                data.users.slice(0, 10).forEach(u => {
+                    tbody.innerHTML += `
+                        <tr class="border-b">
+                            <td class="p-2 font-bold text-gray-700">${u.nome}</td>
+                            <td class="p-2 text-blue-500"><a href="https://wa.me/55${u.whatsapp.replace(/\D/g,'')}" target="_blank"><i class="fa-brands fa-whatsapp"></i></a></td>
+                        </tr>
+                    `;
+                });
+                initChart(data.chart);
+            } else {
+                alert("Erro ao carregar dados de Admin: " + data.message);
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 
     function initChart(chartData) {
         const ctx = document.getElementById('revenueChart').getContext('2d');
-        const labels = Object.keys(chartData); // Mes/Ano
+        const labels = Object.keys(chartData);
         const values = Object.values(chartData);
 
         chartInstance = new Chart(ctx, {
@@ -130,7 +141,7 @@
                 datasets: [{
                     label: 'Arrecadação (R$)',
                     data: values,
-                    borderColor: '#2563eb', // Blue 600
+                    borderColor: '#2563eb',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
                     tension: 0.4,
                     fill: true
@@ -144,15 +155,13 @@
     }
 
     function triggerBroadcast() {
-        // Exemplo de integração com Webhook (n8n/Make)
         if(confirm("Deseja enviar lembrete via WhatsApp para todos os contribuintes pendentes?")) {
-            // fetch('SEU_WEBHOOK_URL', { method: 'POST' ... })
             alert("Disparo iniciado via integração!");
         }
     }
 
     function updateChart(period) {
-        alert("Filtro " + period + " selecionado (Lógica de filtro seria implementada aqui processando o objeto data.chart)");
+        alert("Filtro " + period + " selecionado (Funcionalidade futura).");
     }
 </script>
 </body>
