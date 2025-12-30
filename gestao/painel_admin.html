@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://nextrisedev.github.io/SEMADSA/ICONES.png">
     <script>
-        const user = JSON.parse(localStorage.getItem('semadsa_user'));
+        // --- AUTH GUARD DE GESTOR ---
+        // Verifica se existe a sessão específica 'semadsa_admin'
+        const adminUser = JSON.parse(localStorage.getItem('semadsa_admin'));
         
-        // REGRA DE SEGURANÇA:
-        // O usuário só entra aqui se o Backend devolveu nivel: 'admin'.
-        // Isso acontece se o nome contiver "ADMIN" ou a coluna Status na planilha for "ADMIN".
-        if(!user || user.nivel !== 'admin') {
-            alert("Acesso Negado. Verifique se seu usuário possui permissões de Administrador.");
-            window.location.href = '../login.html';
+        if(!adminUser || adminUser.tipo !== 'admin') {
+            alert("Sessão Expirada ou Inválida. Faça login novamente como Gestor.");
+            // Redireciona para a tela de login ESPECÍFICA de Admin na raiz
+            window.location.href = '../login_admin.html';
         }
     </script>
 </head>
@@ -26,14 +26,23 @@
         <aside class="w-64 bg-blue-900 text-white flex flex-col shadow-2xl z-20">
             <div class="p-6 border-b border-blue-800 flex items-center gap-3">
                 <img src="https://nextrisedev.github.io/SEMADSA/ICONES.png" class="w-8">
-                <h1 class="font-bold text-lg">SEMADSA <span class="text-xs font-normal block text-blue-300">Gestão</span></h1>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">SEMADSA</h1>
+                    <span class="text-xs text-blue-300 block">Painel Gerencial</span>
+                </div>
             </div>
             <nav class="flex-1 p-4 space-y-2">
-                <a href="#" class="block px-4 py-3 bg-blue-800 rounded-lg font-bold"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard</a>
+                <a href="#" class="block px-4 py-3 bg-blue-800 rounded-lg font-bold shadow-inner"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard</a>
                 <a href="#" class="block px-4 py-3 hover:bg-blue-800 rounded-lg transition text-blue-200"><i class="fa-solid fa-users mr-2"></i> Contribuintes</a>
             </nav>
-            <div class="p-4">
-                <button onclick="localStorage.removeItem('semadsa_user'); window.location.href='../login.html'" class="text-sm text-blue-300 hover:text-white"><i class="fa-solid fa-power-off"></i> Sair</button>
+            <div class="p-4 bg-blue-950">
+                <div class="flex items-center gap-2 mb-4 px-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold">A</div>
+                    <p class="text-sm truncate w-32" id="adminNameDisplay">Admin</p>
+                </div>
+                <button onclick="logoutAdmin()" class="w-full text-sm bg-red-600 hover:bg-red-700 text-white py-2 rounded transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-power-off"></i> Encerrar Sessão
+                </button>
             </div>
         </aside>
 
@@ -70,7 +79,6 @@
                         <canvas id="revenueChart" height="150"></canvas>
                         <div class="flex justify-center gap-2 mt-4">
                             <button onclick="updateChart('year')" class="px-3 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200">Anual</button>
-                            <button onclick="updateChart('semester')" class="px-3 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200">Semestral</button>
                         </div>
                     </div>
 
@@ -81,11 +89,12 @@
                                 <thead class="bg-gray-50 text-gray-500">
                                     <tr>
                                         <th class="p-2">Nome</th>
-                                        <th class="p-2">Contato</th>
+                                        <th class="p-2 text-right">Contato</th>
                                     </tr>
                                 </thead>
                                 <tbody id="userTableBody">
-                                    </tbody>
+                                    <tr><td colspan="2" class="p-4 text-center"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -96,11 +105,14 @@
     </div>
 
 <script>
-    // ⚠️ SUBSTITUA PELA SUA URL NOVA
+    // ⚠️ SUBSTITUA PELA SUA URL DEPLOY
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
     let chartInstance = null;
 
-    document.addEventListener('DOMContentLoaded', loadAdminData);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('adminNameDisplay').innerText = adminUser.nome;
+        loadAdminData();
+    });
 
     async function loadAdminData() {
         try {
@@ -112,20 +124,27 @@
                 document.getElementById('kpiUsers').innerText = data.users.length;
 
                 const tbody = document.getElementById('userTableBody');
-                data.users.slice(0, 10).forEach(u => {
+                tbody.innerHTML = ''; // Limpa loader
+                
+                data.users.slice(0, 15).forEach(u => {
                     tbody.innerHTML += `
-                        <tr class="border-b">
-                            <td class="p-2 font-bold text-gray-700">${u.nome}</td>
-                            <td class="p-2 text-blue-500"><a href="https://wa.me/55${u.whatsapp.replace(/\D/g,'')}" target="_blank"><i class="fa-brands fa-whatsapp"></i></a></td>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2 font-bold text-gray-700 truncate max-w-[150px]">${u.nome}</td>
+                            <td class="p-2 text-right">
+                                <a href="https://wa.me/55${u.whatsapp.replace(/\D/g,'')}" target="_blank" class="text-green-500 hover:text-green-700 bg-green-100 p-1 px-2 rounded text-xs font-bold">
+                                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                                </a>
+                            </td>
                         </tr>
                     `;
                 });
                 initChart(data.chart);
             } else {
-                alert("Erro ao carregar dados de Admin: " + data.message);
+                alert("Erro ao carregar dados: " + data.message);
             }
         } catch (e) {
             console.error(e);
+            alert("Erro de conexão com o sistema.");
         }
     }
 
@@ -133,6 +152,8 @@
         const ctx = document.getElementById('revenueChart').getContext('2d');
         const labels = Object.keys(chartData);
         const values = Object.values(chartData);
+
+        if(chartInstance) chartInstance.destroy();
 
         chartInstance = new Chart(ctx, {
             type: 'line',
@@ -143,25 +164,36 @@
                     data: values,
                     borderColor: '#2563eb',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    tension: 0.4,
-                    fill: true
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: '#1e40af'
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } }
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true }
+                }
             }
         });
     }
 
     function triggerBroadcast() {
-        if(confirm("Deseja enviar lembrete via WhatsApp para todos os contribuintes pendentes?")) {
-            alert("Disparo iniciado via integração!");
+        if(confirm("Deseja iniciar o disparo de mensagens?")) {
+            alert("Integração de disparo iniciada!");
+        }
+    }
+
+    function logoutAdmin() {
+        if(confirm("Sair do painel administrativo?")) {
+            localStorage.removeItem('semadsa_admin');
+            window.location.href = '../login_admin.html';
         }
     }
 
     function updateChart(period) {
-        alert("Filtro " + period + " selecionado (Funcionalidade futura).");
+        alert("Filtro " + period + " em desenvolvimento.");
     }
 </script>
 </body>
