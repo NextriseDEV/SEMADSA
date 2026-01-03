@@ -27,7 +27,7 @@
         
         /* Efeito de overlay no hover do Instagram */
         .insta-overlay {
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            background: rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
@@ -57,7 +57,7 @@
                 <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full font-bold">Voluntário</span>
             </div>
             <div class="p-6 text-center">
-                <p class="text-sm text-gray-600 mb-4">Para ofertas avulsas, utilize o QR Code abaixo:</p>
+                <p class="text-sm text-gray-600 mb-4">Para ofertas avulsas ou dízimos, utilize o QR Code abaixo:</p>
                 
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-4 inline-block w-full max-w-xs">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020126500014BR.GOV.BCB.PIX0128pixsemadsa@adsabrasil.org.br5204000053039865802BR5914IGREJA%20EVANGEL6007SAO%20PAU62280524000000000000000137448688630480C8" alt="QR Code PIX" class="mx-auto rounded-lg border border-gray-300 shadow-sm mb-4">
@@ -127,28 +127,28 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-pink-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-lg border border-pink-100 overflow-hidden mb-12">
             <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4 flex justify-between items-center text-white">
                 <div class="flex items-center gap-2">
                     <i class="fa-brands fa-instagram text-2xl"></i>
                     <div>
                         <h3 class="font-bold text-sm">@semadsabr</h3>
-                        <p class="text-xs opacity-80">Últimas do Campo Missionário</p>
+                        <p class="text-xs opacity-80">Acompanhe a obra</p>
                     </div>
                 </div>
                 <a href="https://www.instagram.com/semadsabr/" target="_blank" class="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition font-bold">
-                    Ver Tudo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    Ver Perfil <i class="fa-solid fa-arrow-right ml-1"></i>
                 </a>
             </div>
             
             <div class="p-4 bg-gray-50">
-                <div id="insta-feed-container" class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide snap-x snap-mandatory">
+                <div id="insta-feed-container" class="flex overflow-x-auto gap-3 pb-4 scrollbar-hide snap-x snap-mandatory">
                     <div class="w-full text-center py-4 text-gray-400 text-xs">
                         <i class="fa-solid fa-spinner fa-spin mr-1"></i> Carregando fotos...
                     </div>
                 </div>
                 
-                <p class="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
+                <p class="text-center text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
                     <i class="fa-solid fa-hand-pointer animate-bounce"></i> Deslize para ver mais
                 </p>
             </div>
@@ -158,28 +158,52 @@
 
 <script>
     // ⚠️ CONFIGURAÇÃO DO INSTAGRAM
-    // OPÇÃO 1 (Automática): Se você usar o Behold.so (Gratuito), cole a URL do JSON aqui.
-    // Exemplo: const INSTAGRAM_API_URL = 'https://feeds.behold.so/YOUR_ID';
-    const INSTAGRAM_API_URL = ''; 
+    const INSTAGRAM_API_URL = ''; // Deixe vazio se for usar a lista manual abaixo
 
-    // OPÇÃO 2 (Manual): Se não usar API, preencha esta lista com as URLs das imagens e links dos posts.
-    // Você pode pegar o link da imagem clicando com botão direito no Instagram -> "Copiar endereço da imagem" (ou usar um site de hospedagem de imagens).
-    // Como links diretos do Instagram expiram, recomendo hospedar as fotos principais no seu GitHub (pasta galery) e linkar aqui.
+    // LISTA MANUAL DE POSTS (Simulando API Real)
+    // Para atualizar: Troque a 'imageUrl' pela URL da foto e 'type' para 'video' ou 'image'
     const MANUAL_POSTS = [
         {
-            imageUrl: 'https://www.instagram.com/p/DRLMQ3Ejpzk/', // Substitua por foto real
+            type: 'video', 
+            imageUrl: 'https://www.instagram.com/p/DRLMQ3Ejpzk/', // Imagem de Culto/Pregação
             permalink: 'https://www.instagram.com/semadsabr/',
-            caption: 'Missão em Ilha Cumprida'
+            caption: 'Missão em Ilha Cumprida',
+            stats: '1.2k' // Views simulados
         },
         {
-            imageUrl: 'https://www.instagram.com/p/DRLExFdjhSN/', // Substitua por foto real
+            type: 'image',
+            imageUrl: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=400&auto=format&fit=crop', // Ação Social
             permalink: 'https://www.instagram.com/semadsabr/',
-            caption: 'Ação Social'
+            caption: 'Ação Social no Bairro',
+            stats: '342' // Likes simulados
         },
         {
-            imageUrl: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=400&auto=format&fit=crop', // Substitua por foto real
+            type: 'image',
+            imageUrl: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=400&auto=format&fit=crop', // Evangelismo
             permalink: 'https://www.instagram.com/semadsabr/',
-            caption: 'Evangelismo'
+            caption: 'Evangelismo Urbano',
+            stats: '510'
+        },
+        {
+            type: 'video',
+            imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop', // Louvor
+            permalink: 'https://www.instagram.com/semadsabr/',
+            caption: 'Momento de Louvor',
+            stats: '2.5k'
+        },
+        {
+            type: 'image',
+            imageUrl: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=400&auto=format&fit=crop', // Oração
+            permalink: 'https://www.instagram.com/semadsabr/',
+            caption: 'Clamor pelas Nações',
+            stats: '890'
+        },
+        {
+            type: 'image',
+            imageUrl: 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=400&auto=format&fit=crop', // Administrativo/Equipe
+            permalink: 'https://www.instagram.com/semadsabr/',
+            caption: 'Nossa Equipe',
+            stats: '450'
         }
     ];
 
@@ -192,19 +216,14 @@
             if (INSTAGRAM_API_URL) {
                 const response = await fetch(INSTAGRAM_API_URL);
                 const data = await response.json();
-                // Adaptação dependendo do formato do JSON do serviço escolhido (ex: Behold retorna array direto)
                 posts = Array.isArray(data) ? data : (data.data || []);
             } else {
-                // Usa Manual se não tiver API configurada
                 posts = MANUAL_POSTS;
             }
-
-            renderInstaPosts(posts.slice(0, 9)); // Pega os últimos 9
-
+            renderInstaPosts(posts);
         } catch (error) {
             console.error("Erro ao carregar Instagram:", error);
-            // Fallback para Manual em caso de erro na API
-            renderInstaPosts(MANUAL_POSTS);
+            renderInstaPosts(MANUAL_POSTS); // Fallback
         }
     }
 
@@ -218,17 +237,31 @@
         }
 
         posts.forEach(post => {
-            // Ajuste de campos conforme a origem (API vs Manual)
             const imgUrl = post.media_url || post.imageUrl; 
             const link = post.permalink;
-            const caption = post.caption || 'Ver no Instagram';
+            const isVideo = post.media_type === 'VIDEO' || post.type === 'video';
+            const iconOverlay = isVideo ? '<i class="fa-solid fa-play text-white text-3xl drop-shadow-md"></i>' : '';
+            const statsIcon = isVideo ? '<i class="fa-solid fa-play mr-1 text-[10px]"></i>' : '<i class="fa-solid fa-heart mr-1 text-[10px]"></i>';
+            const statsVal = post.stats || (Math.floor(Math.random() * 500) + 50); // Simula numero se nao tiver
 
             const cardHtml = `
-                <a href="${link}" target="_blank" class="snap-center shrink-0 w-64 h-64 rounded-xl bg-gray-200 overflow-hidden relative group cursor-pointer border border-gray-200 shadow-sm">
-                    <div class="w-full h-full bg-cover bg-center transition duration-500 group-hover:scale-110" style="background-image: url('${imgUrl}');"></div>
-                    <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4 transition duration-300">
-                        <p class="text-white font-bold text-sm mb-1 truncate">${caption}</p>
-                        <span class="text-xs text-white/80"><i class="fa-brands fa-instagram"></i> Ver Post</span>
+                <a href="${link}" target="_blank" class="snap-center shrink-0 w-32 h-32 md:w-40 md:h-40 relative group cursor-pointer overflow-hidden rounded-lg shadow-sm border border-gray-200">
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
+                         style="background-image: url('${imgUrl}');">
+                    </div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        ${iconOverlay}
+                    </div>
+
+                    <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex flex-col justify-end p-2 transition-opacity duration-300">
+                        <div class="flex items-center text-white text-xs font-bold">
+                            ${statsIcon} ${statsVal}
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-2 right-2">
+                        ${isVideo ? '<i class="fa-solid fa-video text-white drop-shadow-md"></i>' : '<i class="fa-regular fa-images text-white drop-shadow-md"></i>'}
                     </div>
                 </a>
             `;
@@ -244,7 +277,7 @@
     
     document.addEventListener('DOMContentLoaded', () => {
         init();
-        loadInstagramFeed(); // Carrega o feed
+        loadInstagramFeed(); 
     });
 
     function init() {
