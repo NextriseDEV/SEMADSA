@@ -12,7 +12,6 @@
     <script>
         // Auth Guard
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
-        // Ajuste o caminho se necessário
         if(!user) window.location.href = '../login.html';
     </script>
 
@@ -22,8 +21,8 @@
             display: none;
         }
         .scrollbar-hide {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         
         /* Efeito de overlay no hover do Instagram */
@@ -94,7 +93,6 @@
                 </label>
 
                 <div id="valorContainer" class="hidden transition-all duration-500 ease-in-out">
-                    
                     <label class="flex items-center justify-center gap-2 mb-4 text-sm text-gray-500 cursor-pointer">
                         <input type="checkbox" id="noValueCheck" onchange="toggleValueInput()" class="w-4 h-4 text-blue-600 rounded">
                         Prefiro não informar o valor
@@ -144,36 +142,12 @@
             </div>
             
             <div class="p-4 bg-gray-50">
-                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide snap-x snap-mandatory">
-                    
-                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-64 h-64 rounded-xl bg-gray-200 overflow-hidden relative group cursor-pointer border border-gray-200 shadow-sm">
-                        <div class="w-full h-full bg-cover bg-center transition duration-500 group-hover:scale-110" style="background-image: url('https://images.unsplash.com/photo-1544928147-79a77456a1d3?q=80&w=400&auto=format&fit=crop');"></div>
-                        
-                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4 transition duration-300">
-                            <p class="text-white font-bold text-sm mb-1"><i class="fa-regular fa-heart"></i> Curtir</p>
-                            <span class="text-xs text-white/80">Ver no Instagram</span>
-                        </div>
-                    </a>
-
-                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-64 h-64 rounded-xl bg-gray-200 overflow-hidden relative group cursor-pointer border border-gray-200 shadow-sm">
-                        <div class="w-full h-full bg-cover bg-center transition duration-500 group-hover:scale-110" style="background-image: url('https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=400&auto=format&fit=crop');"></div>
-                        
-                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4 transition duration-300">
-                            <p class="text-white font-bold text-sm mb-1"><i class="fa-regular fa-heart"></i> Curtir</p>
-                            <span class="text-xs text-white/80">Ver no Instagram</span>
-                        </div>
-                    </a>
-
-                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-64 h-64 rounded-xl bg-gray-200 overflow-hidden relative group cursor-pointer border border-gray-200 shadow-sm">
-                        <div class="w-full h-full bg-cover bg-center transition duration-500 group-hover:scale-110" style="background-image: url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=400&auto=format&fit=crop');"></div>
-                        
-                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4 transition duration-300">
-                            <p class="text-white font-bold text-sm mb-1"><i class="fa-regular fa-heart"></i> Curtir</p>
-                            <span class="text-xs text-white/80">Ver no Instagram</span>
-                        </div>
-                    </a>
-
+                <div id="insta-feed-container" class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide snap-x snap-mandatory">
+                    <div class="w-full text-center py-4 text-gray-400 text-xs">
+                        <i class="fa-solid fa-spinner fa-spin mr-1"></i> Carregando fotos...
+                    </div>
                 </div>
+                
                 <p class="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
                     <i class="fa-solid fa-hand-pointer animate-bounce"></i> Deslize para ver mais
                 </p>
@@ -183,13 +157,95 @@
     </main>
 
 <script>
+    // ⚠️ CONFIGURAÇÃO DO INSTAGRAM
+    // OPÇÃO 1 (Automática): Se você usar o Behold.so (Gratuito), cole a URL do JSON aqui.
+    // Exemplo: const INSTAGRAM_API_URL = 'https://feeds.behold.so/YOUR_ID';
+    const INSTAGRAM_API_URL = ''; 
+
+    // OPÇÃO 2 (Manual): Se não usar API, preencha esta lista com as URLs das imagens e links dos posts.
+    // Você pode pegar o link da imagem clicando com botão direito no Instagram -> "Copiar endereço da imagem" (ou usar um site de hospedagem de imagens).
+    // Como links diretos do Instagram expiram, recomendo hospedar as fotos principais no seu GitHub (pasta galery) e linkar aqui.
+    const MANUAL_POSTS = [
+        {
+            imageUrl: 'https://www.instagram.com/p/DRLMQ3Ejpzk/', // Substitua por foto real
+            permalink: 'https://www.instagram.com/semadsabr/',
+            caption: 'Missão em Ilha Cumprida'
+        },
+        {
+            imageUrl: 'https://www.instagram.com/p/DRLExFdjhSN/', // Substitua por foto real
+            permalink: 'https://www.instagram.com/semadsabr/',
+            caption: 'Ação Social'
+        },
+        {
+            imageUrl: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=400&auto=format&fit=crop', // Substitua por foto real
+            permalink: 'https://www.instagram.com/semadsabr/',
+            caption: 'Evangelismo'
+        }
+    ];
+
+    // --- LÓGICA DO FEED ---
+    async function loadInstagramFeed() {
+        const container = document.getElementById('insta-feed-container');
+        let posts = [];
+
+        try {
+            if (INSTAGRAM_API_URL) {
+                const response = await fetch(INSTAGRAM_API_URL);
+                const data = await response.json();
+                // Adaptação dependendo do formato do JSON do serviço escolhido (ex: Behold retorna array direto)
+                posts = Array.isArray(data) ? data : (data.data || []);
+            } else {
+                // Usa Manual se não tiver API configurada
+                posts = MANUAL_POSTS;
+            }
+
+            renderInstaPosts(posts.slice(0, 9)); // Pega os últimos 9
+
+        } catch (error) {
+            console.error("Erro ao carregar Instagram:", error);
+            // Fallback para Manual em caso de erro na API
+            renderInstaPosts(MANUAL_POSTS);
+        }
+    }
+
+    function renderInstaPosts(posts) {
+        const container = document.getElementById('insta-feed-container');
+        container.innerHTML = '';
+
+        if (posts.length === 0) {
+            container.innerHTML = '<p class="text-xs text-gray-400 w-full text-center">Nenhuma postagem recente.</p>';
+            return;
+        }
+
+        posts.forEach(post => {
+            // Ajuste de campos conforme a origem (API vs Manual)
+            const imgUrl = post.media_url || post.imageUrl; 
+            const link = post.permalink;
+            const caption = post.caption || 'Ver no Instagram';
+
+            const cardHtml = `
+                <a href="${link}" target="_blank" class="snap-center shrink-0 w-64 h-64 rounded-xl bg-gray-200 overflow-hidden relative group cursor-pointer border border-gray-200 shadow-sm">
+                    <div class="w-full h-full bg-cover bg-center transition duration-500 group-hover:scale-110" style="background-image: url('${imgUrl}');"></div>
+                    <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4 transition duration-300">
+                        <p class="text-white font-bold text-sm mb-1 truncate">${caption}</p>
+                        <span class="text-xs text-white/80"><i class="fa-brands fa-instagram"></i> Ver Post</span>
+                    </div>
+                </a>
+            `;
+            container.innerHTML += cardHtml;
+        });
+    }
+
     // ⚠️ SUBSTITUA PELA SUA URL DEPLOY
     const API_URL = 'https://script.google.com/macros/s/AKfycbx4eQLrogacDoirc1yrM20rWc0Hi4AbeLXrcKHZedgXmDPr_tH3uBaBzryzD_uTR-wDqQ/exec';
     
     const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     let myChart = null;
     
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+        loadInstagramFeed(); // Carrega o feed
+    });
 
     function init() {
         document.getElementById('userName').innerText = user.nome;
