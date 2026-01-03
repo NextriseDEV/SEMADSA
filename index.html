@@ -23,7 +23,7 @@
         .card-hover { transition: all 0.3s ease; }
         .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
 
-        /* Animação Botão Flutuante (Reveal) */
+        /* Animação Botão Flutuante */
         @keyframes reveal-text {
             0%, 20% { max-width: 0; opacity: 0; margin-left: 0; }
             30%, 85% { max-width: 150px; opacity: 1; margin-left: 0.5rem; }
@@ -57,7 +57,7 @@
         </div>
     </nav>
 
-    <header class="hero-bg min-h-[60vh] flex flex-col justify-center items-center text-center px-4 relative pt-20">
+    <header class="hero-bg min-h-[70vh] flex flex-col justify-center items-center text-center px-4 relative pt-20 pb-32">
         <div class="max-w-4xl mx-auto z-10 animate-fade-in-up">
             <span class="inline-block py-1 px-3 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
                 Secretaria de Missões
@@ -78,7 +78,7 @@
         </div>
     </header>
 
-    <main class="container mx-auto px-6 -mt-16 relative z-20 pb-20">
+    <main class="container mx-auto px-6 -mt-24 relative z-20 pb-20">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-green-500 card-hover flex flex-col items-center text-center">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl mb-6"><i class="fa-solid fa-hand-holding-heart"></i></div>
@@ -86,12 +86,14 @@
                 <p class="text-gray-500 text-sm mb-6 flex-1">Cadastre-se para receber informativos, acompanhar sua evolução e ser um parceiro ativo.</p>
                 <a href="cadastro.html" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">Fazer Cadastro <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-            <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-blue-600 card-hover flex flex-col items-center text-center transform md:-translate-y-4">
+            
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-blue-600 card-hover flex flex-col items-center text-center transform md:-translate-y-6">
                 <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-3xl mb-6 shadow-inner"><i class="fa-solid fa-user-check"></i></div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-2">Área do Parceiro</h3>
                 <p class="text-gray-500 text-sm mb-6 flex-1">Já contribui conosco? Acesse seu painel para registrar doações e acompanhar sua evolução.</p>
                 <a href="login.html" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-blue-500/30 shadow-lg transition flex items-center justify-center gap-2">Acessar Painel <i class="fa-solid fa-right-to-bracket"></i></a>
             </div>
+
             <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-gray-600 card-hover flex flex-col items-center text-center">
                 <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 text-2xl mb-6"><i class="fa-solid fa-shield-halved"></i></div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Gestão Administrativa</h3>
@@ -117,7 +119,7 @@
 
     <div id="modalPixAnonimo" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
         <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative shadow-2xl transform transition-all scale-100 overflow-hidden">
-            <button onclick="closePixModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition z-10"><i></i></button>
+            <button onclick="closePixModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition z-10"><i class="fa-solid fa-xmark text-2xl"></i></button>
             
             <div id="step-pix" class="step-visible">
                 <div class="mb-4">
@@ -239,16 +241,14 @@
             showStep('step-loading');
 
             try {
-                // Envia para o backend para registrar em "Transacoes" como ANÔNIMO
                 await fetch(API_URL, { 
                     method: 'POST', 
                     body: JSON.stringify({ action: 'registerAnonymousDonation', valor: valor }) 
                 });
-                // Sucesso (mesmo se falhar rede, mostramos sucesso para UX positiva, pois Pix já foi feito)
                 setTimeout(() => showStep('step-success'), 1500); 
             } catch (e) {
                 console.error(e);
-                showStep('step-success'); // Prossegue mesmo com erro de rede
+                showStep('step-success');
             }
         }
 
