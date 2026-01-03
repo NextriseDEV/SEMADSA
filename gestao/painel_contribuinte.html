@@ -12,9 +12,25 @@
     <script>
         // Auth Guard
         const user = JSON.parse(localStorage.getItem('semadsa_user'));
-        // Ajuste o caminho se necessário (ex: se estiver na raiz, remova o ../)
+        // Ajuste o caminho se necessário
         if(!user) window.location.href = '../login.html';
     </script>
+
+    <style>
+        /* Esconder barra de rolagem mas permitir scroll */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Efeito de overlay no hover do Instagram */
+        .insta-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 pb-20">
 
@@ -49,12 +65,12 @@
                     
                     <p class="text-xs text-gray-500 mb-1 font-semibold uppercase">Chave PIX (E-mail):</p>
                     <div class="flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg p-2">
-                        <code id="pixKey" class="text-sm font-mono font-bold text-blue-900 truncate">pixsemadsa@adsabrasil.org.br</code>
-                        <button onclick="copyPixKey()" class="text-gray-500 hover:text-blue-600 transition" title="Copiar">
+                        <code id="pixKeyPainel" class="text-sm font-mono font-bold text-blue-900 truncate">pixsemadsa@adsabrasil.org.br</code>
+                        <button onclick="copyPixKeyPainel()" class="text-gray-500 hover:text-blue-600 transition" title="Copiar">
                             <i class="fa-regular fa-copy"></i>
                         </button>
                     </div>
-                    <div id="copyFeedback" class="text-xs text-green-600 font-bold mt-2 opacity-0 transition-opacity duration-300">Copiado com sucesso!</div>
+                    <div id="copyFeedbackPainel" class="text-xs text-green-600 font-bold mt-2 opacity-0 transition-opacity duration-300">Copiado com sucesso!</div>
                 </div>
                 
                 <p class="text-xs text-gray-400">Favorecido: IGREJA EVANGELICA ASSEMBLEIA DE DEUS</p>
@@ -112,6 +128,82 @@
 
             </div>
         </div>
+
+        <div class="bg-white rounded-2xl shadow-lg border border-pink-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                    <div>
+                        <h3 class="font-bold text-sm">@semadsabr</h3>
+                        <p class="text-xs opacity-80">Acompanhe a obra</p>
+                    </div>
+                </div>
+                <a href="https://www.instagram.com/semadsabr/" target="_blank" class="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition">
+                    Seguir <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                </a>
+            </div>
+            
+            <div class="p-4 bg-gray-50">
+                <div class="flex overflow-x-auto gap-3 pb-2 scrollbar-hide snap-x snap-mandatory">
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/1e3a8a/FFFFFF?text=Missões');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/047857/FFFFFF?text=Ação+Social');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/b91c1c/FFFFFF?text=Culto');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/d97706/FFFFFF?text=Ide');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/4338ca/FFFFFF?text=Projeto');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/be185d/FFFFFF?text=Oração');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/0f766e/FFFFFF?text=Campo');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/1d4ed8/FFFFFF?text=Reino');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/semadsabr/" target="_blank" class="snap-center shrink-0 w-28 h-28 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer border border-gray-300 hover:border-pink-500 transition">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/150x150/000000/FFFFFF?text=SEMADSA');"></div>
+                        <div class="absolute inset-0 insta-overlay opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition duration-300">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </div>
+                    </a>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-2">Clique para ver no Instagram</p>
+            </div>
+        </div>
+
     </main>
 
 <script>
@@ -247,18 +339,17 @@
         });
     }
 
-    // Função de Copiar Chave PIX
-    function copyPixKey() {
-        const keyText = document.getElementById('pixKey').innerText;
+    function copyPixKeyPainel() {
+        const keyText = document.getElementById('pixKeyPainel').innerText;
         navigator.clipboard.writeText(keyText).then(() => {
-            const feedback = document.getElementById('copyFeedback');
+            const feedback = document.getElementById('copyFeedbackPainel');
             feedback.classList.remove('opacity-0');
             setTimeout(() => {
                 feedback.classList.add('opacity-0');
             }, 2000);
         }).catch(err => {
             console.error('Erro ao copiar: ', err);
-            alert("Não foi possível copiar automaticamente. Selecione e copie a chave manualmente.");
+            alert("Não foi possível copiar automaticamente.");
         });
     }
 </script>
